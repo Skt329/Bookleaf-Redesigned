@@ -509,7 +509,7 @@ model DailyPoem {
   id               String    @id @default(cuid())
   registrationId   String
   dayNumber        Int
-  title            String?
+  title            String
   content          Json?     // Tiptap JSON structure
   wordCount        Int       @default(0)
   aiFeedback       String?   @db.Text
@@ -520,6 +520,7 @@ model DailyPoem {
 
   registration WritingChallengeRegistration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
 
+  @@unique([registrationId, dayNumber])
   @@map("daily_poems")
 }
 
