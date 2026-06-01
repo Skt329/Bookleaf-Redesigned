@@ -10,10 +10,13 @@
  * - `/challenge/login`, `/challenge/signup` → redirect authenticated challengers
  */
 
-import { auth } from '@/lib/auth';
+import NextAuth from 'next-auth';
 import { NextResponse } from 'next/server';
+import { authConfig } from '@/lib/auth.config';
 
-import type { UserRole } from '@prisma/client';
+const { auth } = NextAuth(authConfig);
+
+type UserRole = 'CHALLENGER' | 'AUTHOR' | 'ADMIN';
 
 export default auth((req) => {
   const { nextUrl } = req;

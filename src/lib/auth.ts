@@ -18,17 +18,13 @@ import { PrismaAdapter } from '@auth/prisma-adapter';
 import bcrypt from 'bcryptjs';
 
 import { prisma } from '@/lib/prisma';
+import { authConfig } from './auth.config';
 
 import type { UserRole } from '@prisma/client';
 
 export const { auth, signIn, signOut, handlers } = NextAuth({
+  ...authConfig,
   adapter: PrismaAdapter(prisma),
-  session: { strategy: 'jwt' },
-
-  pages: {
-    signIn: '/login',
-  },
-
   providers: [
     Credentials({
       name: 'credentials',
@@ -57,16 +53,14 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       },
     }),
   ],
-
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, user, trigger }) {
-      // On initial sign-in, `user` is populated from authorize()
       if (user) {
         token.id = user.id;
         token.role = (user as { role: UserRole }).role;
       }
 
-      // Look up authorId for AUTHOR users (needed for author portal queries)
       if (
         (trigger === 'signIn' || !token.authorId) &&
         token.role === 'AUTHOR'
@@ -79,15 +73,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       }
 
       return token;
-    },
-
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role as UserRole;
-        session.user.authorId = (token.authorId as string) ?? null;
-      }
-      return session;
     },
   },
 });
