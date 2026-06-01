@@ -130,6 +130,51 @@ export class AzureOpenAIProvider implements AIProvider {
     }
   }
 
+  /** Generate text from a prompt combined with a base64-encoded image. */
+  async generateTextWithImage(
+    prompt: string,
+    imageBase64: string,
+    mimeType: string,
+    options: AIOptions = {},
+  ): Promise<AIResponse> {
+    const messages: Array<{ role: string; content: unknown }> = [];
+
+    if (options.systemPrompt) {
+      messages.push({ role: 'system', content: options.systemPrompt });
+    }
+
+    messages.push({
+      role: 'user',
+      content: [
+        { type: 'text', text: prompt },
+        {
+          type: 'image_url',
+          image_url: { url: `data:${mimeType};base64,${imageBase64}` },
+        },
+      ],
+    });
+
+    const body: Record<string, unknown> = {
+      messages,
+      max_tokens: options.maxTokens ?? DEFAULT_MAX_TOKENS,
+      temperature: options.temperature ?? DEFAULT_TEMPERATURE,
+    };
+
+    const data = await this.callWithRetries<AzureChatResponse>(body, options.model);
+
+    const text = data.choices[0]?.message?.content ?? '';
+    return {
+      text,
+      usage: data.usage
+        ? {
+            promptTokens: data.usage.prompt_tokens,
+            completionTokens: data.usage.completion_tokens,
+            totalTokens: data.usage.total_tokens,
+          }
+        : undefined,
+    };
+  }
+
   // -----------------------------------------------------------------------
   // Internals
   // -----------------------------------------------------------------------

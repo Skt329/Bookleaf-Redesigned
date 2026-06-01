@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
   }
 
   const registration = await prisma.writingChallengeRegistration.findFirst({
-    where: { authorId: session.user.id, paymentStatus: 'PAID' },
+    where: { userId: session.user.id, paymentStatus: 'PAID' },
     orderBy: { registeredAt: 'desc' },
     include: { challenge: true },
   });

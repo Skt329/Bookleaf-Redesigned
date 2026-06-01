@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   PenLine,
   TrendingUp,
+  BookOpen,
   Sparkles,
   LogOut,
   Menu,
@@ -27,6 +28,7 @@ const sidebarLinks = [
   { label: 'Dashboard', href: '/challenge/dashboard', icon: LayoutDashboard },
   { label: 'My Poems', href: '/challenge/poems', icon: PenLine },
   { label: 'My Progress', href: '/challenge/progress', icon: TrendingUp },
+  { label: 'My Book', href: '/challenge/book', icon: BookOpen },
 ];
 
 export function ChallengeSidebar({ user }: ChallengeSidebarProps) {

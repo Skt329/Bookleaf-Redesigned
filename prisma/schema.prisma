@@ -501,6 +501,15 @@ model WritingChallengeRegistration {
   bookPublished         Boolean       @default(false)
   gracePeriodEnds       DateTime?
 
+  // Book compilation fields
+  bookTitle             String?
+  bookSubtitle          String?
+  coverTemplate         String?       // Template name: classic, modern, minimalist, botanical, gradient
+  authorBioForBook      String?       @db.Text
+  dedication            String?       @db.Text
+  acknowledgments       String?       @db.Text
+  bookSubmittedAt       DateTime?     // When user clicked "Submit for Publishing"
+
   challenge  WritingChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   author     Author?          @relation(fields: [authorId], references: [id], onDelete: SetNull)

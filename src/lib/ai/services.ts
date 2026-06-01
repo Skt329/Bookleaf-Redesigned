@@ -174,3 +174,137 @@ GUIDELINES:
     return existingDescription || 'Description not available.';
   }
 }
+
+/* -----------------------------------------------------------------------
+   Writing Challenge — Grammar Fix
+   ----------------------------------------------------------------------- */
+
+const GrammarFixSchema = z.object({
+  corrected: z.string(),
+  changes: z.array(
+    z.object({
+      original: z.string(),
+      fixed: z.string(),
+      reason: z.string(),
+    }),
+  ),
+});
+
+export type GrammarFix = z.infer<typeof GrammarFixSchema>;
+
+/**
+ * Fix grammar, spelling, and punctuation in text.
+ */
+export async function fixGrammar(text: string): Promise<GrammarFix> {
+  const ai = getAIProvider();
+
+  const prompt = `You are a professional editor. Fix grammar, spelling, and punctuation errors in the following text. Preserve the author's voice, style, and line breaks. This may be a poem — respect poetic license and intentional formatting.
+
+TEXT:
+${text}
+
+Return JSON with:
+- "corrected": the full corrected text
+- "changes": array of objects with "original" (exact text that was wrong), "fixed" (correction), and "reason" (brief explanation)
+
+If there are no errors, return the original text with an empty changes array.`;
+
+  try {
+    return await ai.generateJSON(prompt, GrammarFixSchema, {
+      temperature: 0.2,
+      maxTokens: 2048,
+    });
+  } catch (err) {
+    console.error('[AI] fixGrammar failed:', err);
+    throw new Error('Grammar check failed. Check your Azure OpenAI deployment name.');
+  }
+}
+
+/* -----------------------------------------------------------------------
+   Writing Challenge — Poem Feedback
+   ----------------------------------------------------------------------- */
+
+const PoemFeedbackSchema = z.object({
+  overall: z.string(),
+  tone: z.string(),
+  imagery: z.string(),
+  rhythm: z.string(),
+  suggestions: z.array(z.string()),
+});
+
+export type PoemFeedback = z.infer<typeof PoemFeedbackSchema>;
+
+/**
+ * Get structured writing feedback for a poem.
+ */
+export async function getPoemFeedback(
+  title: string,
+  text: string,
+): Promise<PoemFeedback> {
+  const ai = getAIProvider();
+
+  const prompt = `You are a poetry mentor and writing coach. Analyze this poem and provide constructive, encouraging feedback.
+
+TITLE: ${title}
+POEM:
+${text}
+
+Return JSON with:
+- "overall": 2-3 sentences on the overall impression
+- "tone": analysis of the tone and mood (1-2 sentences)
+- "imagery": feedback on imagery and sensory details (1-2 sentences)
+- "rhythm": feedback on rhythm, flow, and line breaks (1-2 sentences)
+- "suggestions": array of 2-4 specific, actionable improvement suggestions`;
+
+  try {
+    return await ai.generateJSON(prompt, PoemFeedbackSchema, {
+      temperature: 0.7,
+      maxTokens: 800,
+    });
+  } catch (err) {
+    console.error('[AI] getPoemFeedback failed:', err);
+    throw new Error('Feedback generation failed. Check your Azure OpenAI deployment name.');
+  }
+}
+
+/* -----------------------------------------------------------------------
+   Writing Challenge — Handwriting Transcription (OCR)
+   ----------------------------------------------------------------------- */
+
+/**
+ * Transcribe handwritten text from an image. Supports Hindi and English.
+ */
+export async function transcribeHandwriting(
+  imageBase64: string,
+  mimeType: string,
+): Promise<{ transcription: string }> {
+  const ai = getAIProvider();
+
+  if (!ai.generateTextWithImage) {
+    throw new Error('Vision model not available for handwriting transcription.');
+  }
+
+  const prompt = `You are an OCR specialist. Transcribe the handwritten text in this image accurately.
+
+RULES:
+- Preserve the original language (Hindi, English, or mixed)
+- Maintain line breaks and stanza structure
+- If text is in Hindi/Devanagari, transcribe in Devanagari script
+- If text is in English, transcribe in English
+- If mixed, maintain both scripts
+- Only return the transcribed text, nothing else
+- If the image doesn't contain readable text, return "Unable to read handwritten text from this image."`;
+
+  try {
+    const { text } = await ai.generateTextWithImage(
+      prompt,
+      imageBase64,
+      mimeType,
+      { temperature: 0.1, maxTokens: 2048 },
+    );
+    return { transcription: text.trim() };
+  } catch (err) {
+    console.error('[AI] transcribeHandwriting failed:', err);
+    throw new Error('Transcription failed. Check your Azure OpenAI deployment name.');
+  }
+}

@@ -58,4 +58,20 @@ export interface AIProvider {
    * @returns The parsed, type-safe object.
    */
   generateJSON<T>(prompt: string, schema: ZodSchema<T>, options?: AIOptions): Promise<T>;
+
+  /**
+   * Generate text from a prompt combined with an image input (vision).
+   *
+   * @param prompt      - The user-facing prompt / instruction.
+   * @param imageBase64 - Base64-encoded image data.
+   * @param mimeType    - MIME type of the image (e.g. `image/png`).
+   * @param options     - Optional generation parameters.
+   * @returns The generated text together with token-usage metadata.
+   */
+  generateTextWithImage?(
+    prompt: string,
+    imageBase64: string,
+    mimeType: string,
+    options?: AIOptions,
+  ): Promise<AIResponse>;
 }
