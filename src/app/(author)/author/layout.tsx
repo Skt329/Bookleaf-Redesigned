@@ -26,6 +26,11 @@ export default async function AuthorLayout({
     redirect('/admin/dashboard');
   }
 
+  // Challengers should use the challenge dashboard
+  if (session.user.role === 'CHALLENGER') {
+    redirect('/challenge/dashboard');
+  }
+
   const user = {
     name: session.user.name ?? 'Author',
     email: session.user.email ?? '',

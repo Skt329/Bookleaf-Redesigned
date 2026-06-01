@@ -12,7 +12,7 @@ export async function GET() {
   }
 
   const registration = await prisma.writingChallengeRegistration.findFirst({
-    where: { authorId: session.user.id, paymentStatus: 'PAID' },
+    where: { userId: session.user.id, paymentStatus: 'PAID' },
     orderBy: { registeredAt: 'desc' },
     include: { challenge: true },
   });
@@ -51,8 +51,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Not registered' }, { status: 404 });
   }
 
-  if (registration.challenge.status !== 'IN_PROGRESS') {
+  if (registration.challenge.status !== 'ACTIVE') {
     return NextResponse.json({ error: 'Challenge is not active' }, { status: 400 });
+  }
+
+  // Check personal window hasn't expired
+  if (registration.personalEndDate && new Date() > registration.personalEndDate) {
+    return NextResponse.json({ error: 'Your 21-day challenge window has ended' }, { status: 400 });
   }
 
   const body = await request.json();

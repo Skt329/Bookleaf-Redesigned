@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 import { AdminSidebar } from './admin-sidebar';
 
 export default async function AdminLayout({
@@ -12,9 +13,16 @@ export default async function AdminLayout({
   if (!session?.user) redirect('/login');
   if (session.user.role !== 'ADMIN') redirect('/author/dashboard');
 
+  const unreadNotifications = await prisma.adminNotification.count({
+    where: { isRead: false },
+  });
+
   return (
     <div className="min-h-screen bg-surface-background">
-      <AdminSidebar user={{ name: session.user.name, email: session.user.email }} />
+      <AdminSidebar
+        user={{ name: session.user.name, email: session.user.email }}
+        unreadNotifications={unreadNotifications}
+      />
       <main className="lg:pl-64">
         <div className="px-4 py-8 sm:px-6 lg:px-8 pt-16 lg:pt-8">
           {children}

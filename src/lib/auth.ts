@@ -3,8 +3,13 @@
  *
  * Uses Prisma adapter with JWT strategy. Credentials provider
  * authenticates against bcrypt-hashed passwords stored in the
- * `users` table. Role and ID are forwarded into the JWT/session
- * so middleware and components can enforce RBAC.
+ * `users` table. Role, ID, and authorId are forwarded into the
+ * JWT/session so middleware and components can enforce RBAC.
+ *
+ * Supports three user roles:
+ * - CHALLENGER: Writing challenge participants
+ * - AUTHOR: Full author portal access
+ * - ADMIN: Platform administration
  */
 
 import NextAuth from 'next-auth';
@@ -22,8 +27,6 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
 
   pages: {
     signIn: '/login',
-    // NextAuth doesn't have a built-in signUp page config,
-    // but we set newUser redirect below in callbacks.
   },
 
   providers: [
@@ -56,12 +59,25 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       // On initial sign-in, `user` is populated from authorize()
       if (user) {
         token.id = user.id;
         token.role = (user as { role: UserRole }).role;
       }
+
+      // Look up authorId for AUTHOR users (needed for author portal queries)
+      if (
+        (trigger === 'signIn' || !token.authorId) &&
+        token.role === 'AUTHOR'
+      ) {
+        const author = await prisma.author.findFirst({
+          where: { userId: token.id as string },
+          select: { id: true },
+        });
+        token.authorId = author?.id ?? null;
+      }
+
       return token;
     },
 
@@ -69,6 +85,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as UserRole;
+        session.user.authorId = (token.authorId as string) ?? null;
       }
       return session;
     },
@@ -84,6 +101,7 @@ declare module 'next-auth' {
     user: {
       id: string;
       role: UserRole;
+      authorId?: string | null;
       name?: string | null;
       email?: string | null;
       image?: string | null;

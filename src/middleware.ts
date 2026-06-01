@@ -3,9 +3,11 @@
  *
  * Enforces route protection and role-based access control.
  *
- * - `/author/*`  → AUTHOR or ADMIN only
- * - `/admin/*`   → ADMIN only
+ * - `/author/*`    → AUTHOR or ADMIN only
+ * - `/admin/*`     → ADMIN only
+ * - `/challenge/*` → CHALLENGER or AUTHOR (dashboard area; not auth pages)
  * - `/login`, `/signup` → redirect authenticated users to their dashboard
+ * - `/challenge/login`, `/challenge/signup` → redirect authenticated challengers
  */
 
 import { auth } from '@/lib/auth';
@@ -20,13 +22,45 @@ export default auth((req) => {
   const role = session?.user?.role as UserRole | undefined;
   const pathname = nextUrl.pathname;
 
+  // ── Challenge auth pages: redirect logged-in users ──
+  if (
+    pathname === '/challenge/login' ||
+    pathname === '/challenge/signup'
+  ) {
+    if (isLoggedIn) {
+      return NextResponse.redirect(new URL('/challenge/dashboard', nextUrl));
+    }
+    return NextResponse.next();
+  }
+
   // ── Auth pages: redirect logged-in users to their dashboard ──
   if (pathname === '/login' || pathname === '/signup') {
     if (isLoggedIn) {
       const dashboardUrl =
-        role === 'ADMIN' ? '/admin/dashboard' : '/author/dashboard';
+        role === 'ADMIN'
+          ? '/admin/dashboard'
+          : role === 'CHALLENGER'
+            ? '/challenge/dashboard'
+            : '/author/dashboard';
       return NextResponse.redirect(new URL(dashboardUrl, nextUrl));
     }
+    return NextResponse.next();
+  }
+
+  // ── Protected: /challenge/* (dashboard area) → CHALLENGER or AUTHOR ──
+  if (
+    pathname.startsWith('/challenge/dashboard') ||
+    pathname.startsWith('/challenge/poems') ||
+    pathname.startsWith('/challenge/progress') ||
+    pathname.startsWith('/challenge/payment')
+  ) {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL('/challenge/login', nextUrl));
+    }
+    if (role === 'ADMIN') {
+      return NextResponse.redirect(new URL('/admin/dashboard', nextUrl));
+    }
+    // Allow CHALLENGER and AUTHOR
     return NextResponse.next();
   }
 
@@ -62,6 +96,7 @@ export const config = {
   matcher: [
     '/author/:path*',
     '/admin/:path*',
+    '/challenge/:path*',
     '/login',
     '/signup',
   ],

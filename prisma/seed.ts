@@ -299,29 +299,73 @@ async function main() {
   }
   console.log(`  ✓ ${BLOG_POSTS.length} blog posts created`);
 
-  // 8. Writing Challenge
-  console.log('\n🏆 Creating writing challenge...');
-  await prisma.writingChallenge.create({
+  // 8. Writing Challenge (always-open product)
+  console.log('\n🏆 Creating writing challenge product...');
+  const challenge = await prisma.writingChallenge.create({
     data: {
-      title: '#TheWriteAngle — 21-Day Poetry Challenge',
-      startDate: new Date('2025-07-01'),
-      endDate: new Date('2025-07-21'),
-      registrationDeadline: new Date('2025-06-25'),
+      title: '#TheWriteAngle — 21-Day Writing Challenge',
       price: 199900, // ₹1,999
       originalPrice: 499900, // ₹4,999
-      maxSlots: 100,
-      slotsRemaining: 47,
-      status: 'REGISTRATION_OPEN',
-      description: 'Write a poem every day for 21 days. Get published in an anthology. Build your author profile.',
+      durationDays: 21,
+      status: 'ACTIVE',
+      description: 'Challenge yourself to write a poem every day for 21 days. Get published in an anthology. Build your author profile.',
     },
   });
-  console.log('  ✓ Writing challenge created');
+  console.log('  ✓ Writing challenge product created');
+
+  // 9. Test Challenger account (pre-paid, for testing)
+  console.log('\n🧪 Creating test challenger account...');
+  const hashedChallengerPw = await bcrypt.hash('Challenge@123', 12);
+
+  const challengerUser = await prisma.user.upsert({
+    where: { email: 'challenger@bookleaf.dev' },
+    update: {},
+    create: {
+      email: 'challenger@bookleaf.dev',
+      name: 'Test Challenger',
+      password: hashedChallengerPw,
+      role: 'CHALLENGER',
+      isVerified: true,
+    },
+  });
+
+  const now = new Date();
+  const endDate = new Date(now);
+  endDate.setDate(endDate.getDate() + 21);
+
+  const registration = await prisma.writingChallengeRegistration.create({
+    data: {
+      challengeId: challenge.id,
+      userId: challengerUser.id,
+      paymentStatus: 'PAID',
+      personalStartDate: now,
+      personalEndDate: endDate,
+    },
+  });
+
+  // Add 3 sample poems so the dashboard has data
+  for (let day = 1; day <= 3; day++) {
+    await prisma.dailyPoem.create({
+      data: {
+        registrationId: registration.id,
+        dayNumber: day,
+        title: `Poem for Day ${day}`,
+        content: { type: 'doc', content: [{ type: 'paragraph', content: [{ type: 'text', text: `This is a sample poem for day ${day} of the challenge.` }] }] },
+        wordCount: 20 + day * 5,
+        isDraft: false,
+        submittedAt: new Date(now.getTime() + day * 24 * 60 * 60 * 1000),
+      },
+    });
+  }
+
+  console.log('  ✓ Test challenger: challenger@bookleaf.dev / Challenge@123 (PAID, 3 poems written)');
 
   console.log('\n✅ Seed complete!\n');
   console.log('Login credentials:');
-  console.log('  Admin:  admin@bookleaf.com / Admin@123');
-  console.log('  Author: priya@bookleaf.dev / Author@123');
-  console.log('  Author: arjun@bookleaf.dev / Author@123');
+  console.log('  Admin:      admin@bookleaf.com / Admin@123');
+  console.log('  Author:     priya@bookleaf.dev / Author@123');
+  console.log('  Author:     arjun@bookleaf.dev / Author@123');
+  console.log('  Challenger: challenger@bookleaf.dev / Challenge@123');
 }
 
 main()

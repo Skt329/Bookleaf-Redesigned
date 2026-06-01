@@ -5,20 +5,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard,
-  BookOpen,
-  Wallet,
-  BarChart3,
-  LifeBuoy,
-  User,
+  PenLine,
+  TrendingUp,
+  Sparkles,
   LogOut,
   Menu,
   X,
   ChevronLeft,
-  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface AuthorSidebarProps {
+interface ChallengeSidebarProps {
   user: {
     name: string;
     email: string;
@@ -27,44 +24,40 @@ interface AuthorSidebarProps {
 }
 
 const sidebarLinks = [
-  { label: 'Dashboard', href: '/author/dashboard', icon: LayoutDashboard },
-  { label: 'My Books', href: '/author/books', icon: BookOpen },
-  { label: 'Royalties', href: '/author/royalties', icon: Wallet },
-  { label: 'Sales', href: '/author/sales', icon: BarChart3 },
-  { label: 'Challenge', href: '/author/challenge', icon: Sparkles },
-  { label: 'Support', href: '/author/tickets', icon: LifeBuoy },
-  { label: 'Profile', href: '/author/profile', icon: User },
+  { label: 'Dashboard', href: '/challenge/dashboard', icon: LayoutDashboard },
+  { label: 'My Poems', href: '/challenge/poems', icon: PenLine },
+  { label: 'My Progress', href: '/challenge/progress', icon: TrendingUp },
 ];
 
-export function AuthorSidebar({ user }: AuthorSidebarProps) {
+export function ChallengeSidebar({ user }: ChallengeSidebarProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
   const isActive = (href: string) => {
-    if (href === '/author/dashboard')
-      return pathname === '/author/dashboard' || pathname === '/author';
+    if (href === '/challenge/dashboard')
+      return pathname === '/challenge/dashboard' || pathname === '/challenge';
     return pathname.startsWith(href);
   };
 
   const handleLogout = async () => {
     const { signOut } = await import('next-auth/react');
-    signOut({ callbackUrl: '/login' });
+    signOut({ callbackUrl: '/challenge/login' });
   };
 
   const sidebarContent = (
     <>
       {/* Logo / Brand */}
-      <div className="flex items-center gap-3 border-b border-border px-5 py-6">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-brand-accent font-display text-heading-sm text-text-inverse">
-          B
+      <div className="flex items-center gap-3 border-b border-border-accent/30 px-5 py-6">
+        <div className="flex size-10 items-center justify-center rounded-xl bg-brand-accent shadow-gold">
+          <Sparkles className="size-5 text-brand-dark" />
         </div>
         {!collapsed && (
           <div className="overflow-hidden">
             <p className="truncate text-body-sm font-semibold text-text-primary">
-              BookLeaf
+              #TheWriteAngle
             </p>
-            <p className="text-caption text-text-muted">Author Portal</p>
+            <p className="text-caption text-text-muted">Writing Challenge</p>
           </div>
         )}
       </div>
@@ -82,7 +75,7 @@ export function AuthorSidebar({ user }: AuthorSidebarProps) {
                   className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2.5 text-body-sm font-medium transition-all duration-200',
                     active
-                      ? 'bg-brand-primary text-text-inverse shadow-sm'
+                      ? 'bg-brand-accent text-brand-dark shadow-gold'
                       : 'text-text-secondary hover:bg-surface-muted hover:text-text-primary',
                     collapsed && 'justify-center px-2',
                   )}
@@ -91,7 +84,7 @@ export function AuthorSidebar({ user }: AuthorSidebarProps) {
                   <link.icon
                     className={cn(
                       'size-5 shrink-0',
-                      active ? 'text-text-inverse' : 'text-text-muted',
+                      active ? 'text-brand-dark' : 'text-text-muted',
                     )}
                   />
                   {!collapsed && <span>{link.label}</span>}
@@ -110,7 +103,7 @@ export function AuthorSidebar({ user }: AuthorSidebarProps) {
             collapsed && 'justify-center',
           )}
         >
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-primary-light text-body-sm font-semibold text-text-inverse">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-brand-accent/20 text-body-sm font-semibold text-brand-accent">
             {user.name.charAt(0).toUpperCase()}
           </div>
           {!collapsed && (
@@ -125,6 +118,7 @@ export function AuthorSidebar({ user }: AuthorSidebarProps) {
           )}
         </div>
         <button
+          id="challenge-sidebar-logout"
           onClick={handleLogout}
           className={cn(
             'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-body-sm font-medium',
@@ -147,11 +141,13 @@ export function AuthorSidebar({ user }: AuthorSidebarProps) {
           onClick={() => setMobileOpen(true)}
           className="flex size-10 items-center justify-center rounded-lg transition-colors hover:bg-surface-muted"
           aria-label="Open menu"
+          id="challenge-mobile-menu-open"
         >
           <Menu className="size-5 text-text-primary" />
         </button>
-        <span className="font-display text-body-md font-semibold text-text-primary">
-          BookLeaf
+        <span className="inline-flex items-center gap-2 font-display text-body-md font-semibold text-text-primary">
+          <Sparkles className="size-4 text-brand-accent" />
+          #TheWriteAngle
         </span>
         <div className="size-10" />
       </div>
@@ -175,6 +171,7 @@ export function AuthorSidebar({ user }: AuthorSidebarProps) {
           onClick={() => setMobileOpen(false)}
           className="absolute right-3 top-5 flex size-8 items-center justify-center rounded-lg hover:bg-surface-muted"
           aria-label="Close menu"
+          id="challenge-mobile-menu-close"
         >
           <X className="size-5 text-text-muted" />
         </button>
@@ -193,6 +190,7 @@ export function AuthorSidebar({ user }: AuthorSidebarProps) {
           onClick={() => setCollapsed(!collapsed)}
           className="absolute -right-3 bottom-20 hidden size-6 items-center justify-center rounded-full border border-border bg-surface-card shadow-sm transition-colors hover:bg-surface-muted lg:flex"
           aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          id="challenge-sidebar-collapse"
         >
           <ChevronLeft
             className={cn(

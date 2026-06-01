@@ -17,6 +17,9 @@ import {
   X,
   Shield,
   ChevronRight,
+  Trophy,
+  ShoppingBag,
+  Bell,
 } from 'lucide-react';
 
 /* -----------------------------------------------------------------------
@@ -27,7 +30,10 @@ const NAV_LINKS = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/authors', label: 'Authors', icon: Users },
   { href: '/admin/books', label: 'Books', icon: BookOpen },
+  { href: '/admin/challenges', label: 'Challenges', icon: Trophy },
+  { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { href: '/admin/royalties', label: 'Royalties', icon: Wallet },
+  { href: '/admin/notifications', label: 'Notifications', icon: Bell },
   { href: '/admin/tickets', label: 'Tickets', icon: LifeBuoy },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
@@ -38,9 +44,10 @@ const NAV_LINKS = [
 
 interface AdminSidebarProps {
   user: { name?: string | null; email?: string | null };
+  unreadNotifications?: number;
 }
 
-export function AdminSidebar({ user }: AdminSidebarProps) {
+export function AdminSidebar({ user, unreadNotifications = 0 }: AdminSidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
 
@@ -81,7 +88,12 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
             >
               <Icon className="size-[18px]" />
               {link.label}
-              {active && <ChevronRight className="ml-auto size-4" />}
+              {link.label === 'Notifications' && unreadNotifications > 0 && (
+                <span className="ml-auto flex size-5 items-center justify-center rounded-full bg-status-danger text-text-inverse text-[10px] font-bold">
+                  {unreadNotifications > 99 ? '99+' : unreadNotifications}
+                </span>
+              )}
+              {active && link.label !== 'Notifications' && <ChevronRight className="ml-auto size-4" />}
             </Link>
           );
         })}

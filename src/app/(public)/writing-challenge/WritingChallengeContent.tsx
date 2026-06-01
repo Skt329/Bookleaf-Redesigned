@@ -316,7 +316,7 @@ export default function WritingChallengeContent() {
               transition={{ duration: 0.5, delay: 0.65 }}
             >
               <Link
-                href="/contact"
+                href="/challenge/signup"
                 className="inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-brand-accent text-brand-dark font-semibold text-body-md hover:bg-brand-accent-hover transition-colors duration-150 shadow-gold no-underline"
               >
                 Join the Challenge
@@ -601,7 +601,7 @@ export default function WritingChallengeContent() {
               Write daily, get AI feedback, and become a published author.
             </p>
             <Link
-              href="/contact"
+              href="/challenge/signup"
               className="mt-8 inline-flex items-center gap-2 px-8 py-3.5 rounded-lg bg-brand-accent text-brand-dark font-semibold text-body-md hover:bg-brand-accent-hover transition-colors duration-150 shadow-gold no-underline"
             >
               Join the Challenge

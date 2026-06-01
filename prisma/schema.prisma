@@ -18,9 +18,9 @@ datasource db {
 // ============================================================================
 
 enum UserRole {
+  CHALLENGER
   AUTHOR
   ADMIN
-  READER
 }
 
 enum PublishingPackageType {
@@ -144,10 +144,8 @@ enum NotificationStatus {
 }
 
 enum ChallengeStatus {
-  UPCOMING
-  REGISTRATION_OPEN
-  IN_PROGRESS
-  COMPLETED
+  ACTIVE
+  PAUSED
 }
 
 enum PaymentStatus {
@@ -223,7 +221,7 @@ model User {
   name             String?
   phone            String?
   city             String?
-  role             UserRole @default(READER)
+  role             UserRole @default(CHALLENGER)
   avatarUrl        String?
   bio              String?  @db.Text
   joinedDate       DateTime @default(now())
@@ -263,11 +261,12 @@ model Author {
   updatedAt           DateTime             @updatedAt
 
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  books            Book[]
-  royaltyRecords   RoyaltyRecord[]
-  supportTickets   SupportTicket[]
-  notificationLogs NotificationLog[]
-  packagePurchases PackagePurchase[]
+  books                  Book[]
+  royaltyRecords         RoyaltyRecord[]
+  supportTickets         SupportTicket[]
+  notificationLogs       NotificationLog[]
+  packagePurchases       PackagePurchase[]
+  challengeRegistrations WritingChallengeRegistration[]
 
   @@map("authors")
 }
@@ -360,7 +359,10 @@ model SalesRecord {
 model Order {
   id                    String      @id @default(cuid())
   orderNumber           String      @unique // e.g. BL-2025-001234
-  customerId            String
+  customerId            String?     // null for guest checkout
+  guestEmail            String?     // for guest order tracking
+  guestName             String?     // guest buyer name
+  guestPhone            String?     // guest contact phone
   status                OrderStatus @default(PENDING)
   totalAmount           Int         // paise
   shippingAddress       Json?
@@ -370,10 +372,11 @@ model Order {
   createdAt             DateTime    @default(now())
   updatedAt             DateTime    @updatedAt
 
-  customer User        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer User?       @relation(fields: [customerId], references: [id], onDelete: SetNull)
   items    OrderItem[]
 
   @@index([customerId])
+  @@index([guestEmail])
   @@map("orders")
 }
 
@@ -467,19 +470,15 @@ model NotificationLog {
 // ============================================================================
 
 model WritingChallenge {
-  id                   String          @id @default(cuid())
-  title                String
-  startDate            DateTime
-  endDate              DateTime
-  registrationDeadline DateTime
-  price                Int             // paise
-  originalPrice        Int             // paise
-  maxSlots             Int
-  slotsRemaining       Int
-  status               ChallengeStatus @default(UPCOMING)
-  description          String?         @db.Text
-  createdAt            DateTime        @default(now())
-  updatedAt            DateTime        @updatedAt
+  id            String          @id @default(cuid())
+  title         String
+  price         Int             // paise
+  originalPrice Int             // paise
+  durationDays  Int             @default(21)
+  status        ChallengeStatus @default(ACTIVE)
+  description   String?         @db.Text
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 
   registrations WritingChallengeRegistration[]
   books         Book[]
@@ -490,18 +489,25 @@ model WritingChallenge {
 model WritingChallengeRegistration {
   id                    String        @id @default(cuid())
   challengeId           String
-  authorId              String        // FK to User (the registrant)
+  userId                String        // FK to User (CHALLENGER or AUTHOR)
+  authorId              String?       // FK to Author (only if user is already AUTHOR)
   paymentStatus         PaymentStatus @default(PENDING)
   stripePaymentIntentId String?
+  stripeSessionId       String?       // Stripe Checkout session ID
   registeredAt          DateTime      @default(now())
+  personalStartDate     DateTime?     // Set when payment confirmed — start of 21-day window
+  personalEndDate       DateTime?     // personalStartDate + 21 days
   completedChallenge    Boolean       @default(false)
   bookPublished         Boolean       @default(false)
   gracePeriodEnds       DateTime?
 
   challenge  WritingChallenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  author     User             @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  author     Author?          @relation(fields: [authorId], references: [id], onDelete: SetNull)
   dailyPoems DailyPoem[]
 
+  @@index([userId])
+  @@index([challengeId])
   @@map("writing_challenge_registrations")
 }
 
@@ -590,4 +596,20 @@ model Review {
   createdAt      DateTime     @default(now())
 
   @@map("reviews")
+}
+
+// ============================================================================
+// Admin Notifications
+// ============================================================================
+
+model AdminNotification {
+  id          String   @id @default(cuid())
+  type        String   // e.g. "CHALLENGE_BOOKS_READY", "NEW_ORDER", "CHALLENGE_COMPLETED"
+  title       String
+  message     String   @db.Text
+  referenceId String?  // Generic FK to challenge/order/etc.
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@map("admin_notifications")
 }
