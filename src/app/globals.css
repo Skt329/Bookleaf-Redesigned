@@ -1,0 +1,397 @@
+@import "tailwindcss";
+
+/*
+ * BookLeaf Publishing — Design System (Tailwind v4)
+ * Theme: "Editorial Luxury Meets Indie Publishing"
+ *
+ * Single source of truth. All tokens live in @theme.
+ * Internal vars prefixed --bl- to avoid collision with Tailwind generated vars.
+ */
+
+/* ============================================
+   Internal CSS Variables — Light Mode
+   Prefixed with --bl- to avoid @theme collision.
+   These are swapped via .dark class.
+   ============================================ */
+:root {
+  --bl-brand-primary: #1a3c2e;
+  --bl-brand-primary-hover: #153327;
+  --bl-brand-primary-light: #2d6b50;
+  --bl-brand-accent: #c9a84c;
+  --bl-brand-accent-hover: #b8973f;
+  --bl-brand-accent-light: #d4b96a;
+  --bl-brand-cream: #f9f5ef;
+  --bl-brand-dark: #0d1f17;
+
+  --bl-surface-background: #f9f5ef;
+  --bl-surface-card: #ffffff;
+  --bl-surface-card-hover: #fefdfb;
+  --bl-surface-elevated: #ffffff;
+  --bl-surface-overlay: rgba(13, 31, 23, 0.5);
+  --bl-surface-muted: #f3efe7;
+
+  --bl-text-primary: #1a1a1a;
+  --bl-text-secondary: #4a4a4a;
+  --bl-text-muted: #6b7280;
+  --bl-text-inverse: #f9f5ef;
+  --bl-text-accent: #c9a84c;
+  --bl-text-link: #1a3c2e;
+  --bl-text-link-hover: #2d6b50;
+
+  --bl-status-success: #16a34a;
+  --bl-status-warning: #d97706;
+  --bl-status-danger: #dc2626;
+  --bl-status-info: #2563eb;
+
+  --bl-border: #e5e0d8;
+  --bl-border-muted: #f0ece4;
+  --bl-border-focus: #1a3c2e;
+  --bl-border-accent: #c9a84c;
+}
+
+/* ============================================
+   Dark Mode Overrides
+   ============================================ */
+.dark {
+  --bl-brand-primary: #2d6b50;
+  --bl-brand-primary-hover: #359961;
+  --bl-brand-primary-light: #3d8a68;
+  --bl-brand-accent: #d4b96a;
+  --bl-brand-accent-hover: #dcc57e;
+  --bl-brand-accent-light: #e0d08f;
+  --bl-brand-cream: #0d1f17;
+  --bl-brand-dark: #f9f5ef;
+
+  --bl-surface-background: #0a1812;
+  --bl-surface-card: #162b21;
+  --bl-surface-card-hover: #1c3429;
+  --bl-surface-elevated: #1e3a2d;
+  --bl-surface-overlay: rgba(0, 0, 0, 0.7);
+  --bl-surface-muted: #122420;
+
+  --bl-text-primary: #f0ece4;
+  --bl-text-secondary: #c8c4bc;
+  --bl-text-muted: #8b9a8f;
+  --bl-text-inverse: #0d1f17;
+  --bl-text-accent: #d4b96a;
+  --bl-text-link: #4ebb82;
+  --bl-text-link-hover: #6dd89e;
+
+  --bl-status-success: #22c55e;
+  --bl-status-warning: #f59e0b;
+  --bl-status-danger: #ef4444;
+  --bl-status-info: #3b82f6;
+
+  --bl-border: #2a4a3a;
+  --bl-border-muted: #1e3a2d;
+  --bl-border-focus: #4ebb82;
+  --bl-border-accent: #d4b96a;
+}
+
+/* ============================================
+   Tailwind v4 @theme — THE Single Source of Truth
+   Maps --bl- vars → Tailwind utility classes
+   ============================================ */
+@theme {
+  /* ---- Colors ---- */
+  --color-brand-primary: var(--bl-brand-primary);
+  --color-brand-primary-hover: var(--bl-brand-primary-hover);
+  --color-brand-primary-light: var(--bl-brand-primary-light);
+  --color-brand-accent: var(--bl-brand-accent);
+  --color-brand-accent-hover: var(--bl-brand-accent-hover);
+  --color-brand-accent-light: var(--bl-brand-accent-light);
+  --color-brand-cream: var(--bl-brand-cream);
+  --color-brand-dark: var(--bl-brand-dark);
+
+  --color-surface-background: var(--bl-surface-background);
+  --color-surface-card: var(--bl-surface-card);
+  --color-surface-card-hover: var(--bl-surface-card-hover);
+  --color-surface-elevated: var(--bl-surface-elevated);
+  --color-surface-overlay: var(--bl-surface-overlay);
+  --color-surface-muted: var(--bl-surface-muted);
+
+  --color-text-primary: var(--bl-text-primary);
+  --color-text-secondary: var(--bl-text-secondary);
+  --color-text-muted: var(--bl-text-muted);
+  --color-text-inverse: var(--bl-text-inverse);
+  --color-text-accent: var(--bl-text-accent);
+  --color-text-link: var(--bl-text-link);
+  --color-text-link-hover: var(--bl-text-link-hover);
+
+  --color-status-success: var(--bl-status-success);
+  --color-status-warning: var(--bl-status-warning);
+  --color-status-danger: var(--bl-status-danger);
+  --color-status-info: var(--bl-status-info);
+
+  --color-border: var(--bl-border);
+  --color-border-muted: var(--bl-border-muted);
+  --color-border-focus: var(--bl-border-focus);
+  --color-border-accent: var(--bl-border-accent);
+
+  /* ---- Fonts ---- */
+  --font-display: var(--font-playfair), "Playfair Display", Georgia, serif;
+  --font-body: var(--font-dm-sans), "DM Sans", system-ui, sans-serif;
+
+  /* ---- Font Sizes ---- */
+  --text-display-xl: 3.75rem;
+  --text-display-xl--line-height: 1.1;
+  --text-display-xl--letter-spacing: -0.02em;
+
+  --text-display-lg: 3rem;
+  --text-display-lg--line-height: 1.15;
+  --text-display-lg--letter-spacing: -0.02em;
+
+  --text-display-md: 2.5rem;
+  --text-display-md--line-height: 1.2;
+  --text-display-md--letter-spacing: -0.015em;
+
+  --text-display-sm: 2rem;
+  --text-display-sm--line-height: 1.25;
+  --text-display-sm--letter-spacing: -0.01em;
+
+  --text-heading-lg: 1.75rem;
+  --text-heading-lg--line-height: 1.3;
+  --text-heading-lg--letter-spacing: -0.01em;
+
+  --text-heading-md: 1.5rem;
+  --text-heading-md--line-height: 1.35;
+
+  --text-heading-sm: 1.25rem;
+  --text-heading-sm--line-height: 1.4;
+
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.7;
+
+  --text-body-md: 1rem;
+  --text-body-md--line-height: 1.7;
+
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.6;
+
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.5;
+
+  /* ---- Shadows ---- */
+  --shadow-card: 0 2px 8px rgba(26, 60, 46, 0.06), 0 0 0 1px rgba(26, 60, 46, 0.03);
+  --shadow-card-hover: 0 12px 32px rgba(26, 60, 46, 0.12), 0 0 0 1px rgba(26, 60, 46, 0.05);
+  --shadow-gold: 0 4px 14px rgba(201, 168, 76, 0.25);
+  --shadow-sm: 0 1px 2px rgba(26, 60, 46, 0.05);
+  --shadow-md: 0 4px 12px rgba(26, 60, 46, 0.08);
+  --shadow-lg: 0 12px 24px rgba(26, 60, 46, 0.1);
+  --shadow-xl: 0 24px 48px rgba(26, 60, 46, 0.12);
+
+  /* ---- Z-Index ---- */
+  --z-dropdown: 50;
+  --z-sticky: 100;
+  --z-modal: 200;
+  --z-toast: 300;
+
+  /* ---- Animations ---- */
+  --animate-marquee: marquee 30s linear infinite;
+  --animate-pulse-soft: pulse-soft 2s ease-in-out infinite;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.5s ease-out;
+  --animate-slide-up: slide-up 0.5s ease-out;
+}
+
+/* ============================================
+   Keyframes
+   ============================================ */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   Base Styles — @layer base ensures utilities win
+   ============================================ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bl-surface-background);
+    color: var(--bl-text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--bl-text-primary);
+  }
+
+  h4, h5, h6 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  p {
+    color: var(--bl-text-secondary);
+    line-height: 1.7;
+  }
+
+  a {
+    color: var(--bl-text-link);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  a:hover {
+    color: var(--bl-text-link-hover);
+  }
+
+  ::selection {
+    background-color: var(--bl-brand-accent);
+    color: var(--bl-brand-dark);
+  }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bl-surface-muted); }
+  ::-webkit-scrollbar-thumb { background: var(--bl-border); border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--bl-text-muted); }
+
+  :focus-visible {
+    outline: 2px solid var(--bl-border-focus);
+    outline-offset: 2px;
+    border-radius: 0.375rem;
+  }
+}
+
+/* ============================================
+   Component Styles — @layer components so utilities still win
+   ============================================ */
+@layer components {
+  /* --- Container --- */
+  .container-bookleaf {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-bookleaf { padding-left: 2rem; padding-right: 2rem; }
+  }
+
+  @media (min-width: 1024px) {
+    .container-bookleaf { padding-left: 2.5rem; padding-right: 2.5rem; }
+  }
+
+  @media (min-width: 1280px) {
+    .container-bookleaf { padding-left: 3rem; padding-right: 3rem; }
+  }
+
+  /* --- Section spacing --- */
+  .section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
+  /* --- Dark section (Footer, CTA) --- */
+  .section-dark {
+    background-color: var(--bl-brand-primary);
+    color: var(--bl-text-inverse);
+  }
+
+  .section-dark h1,
+  .section-dark h2,
+  .section-dark h3,
+  .section-dark h4 {
+    color: var(--bl-text-inverse);
+  }
+
+  .section-dark p {
+    color: rgba(249, 245, 239, 0.8);
+  }
+
+  .section-dark a {
+    color: rgba(249, 245, 239, 0.7);
+  }
+
+  .section-dark a:hover {
+    color: var(--bl-brand-accent);
+  }
+
+  /* --- Card --- */
+  .card {
+    background-color: var(--bl-surface-card);
+    border: 1px solid var(--bl-border-muted);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(26, 60, 46, 0.06), 0 0 0 1px rgba(26, 60, 46, 0.03);
+    transition: box-shadow 250ms ease, transform 250ms ease;
+  }
+
+  .card:hover {
+    box-shadow: 0 12px 32px rgba(26, 60, 46, 0.12), 0 0 0 1px rgba(26, 60, 46, 0.05);
+  }
+
+  /* --- Card with gold accent --- */
+  .card-accent {
+    background-color: var(--bl-surface-card);
+    border: 2px solid var(--bl-brand-accent);
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 14px rgba(201, 168, 76, 0.25);
+  }
+
+  /* --- Badge --- */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    line-height: 1.5;
+  }
+
+  /* --- Skeleton loading --- */
+  .skeleton {
+    background: linear-gradient(90deg, var(--bl-surface-muted) 25%, var(--bl-surface-card-hover) 50%, var(--bl-surface-muted) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 0.5rem;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+@media print {
+  body { background: white; color: black; }
+  .no-print { display: none !important; }
+}
+
