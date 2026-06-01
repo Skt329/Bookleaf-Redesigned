@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/prisma';
 import { Navbar, Footer } from '@/components/layout';
 import { PageHeader } from '@/components/shared';
 import { GENRES, PLATFORMS } from '@/constants';
+import { getPublishedBook, getRelatedBooks } from '@/lib/dal';
 import { BookDetailClient } from './book-detail-client';
 
 /* -----------------------------------------------------------------------
@@ -15,19 +15,12 @@ interface PageProps {
 }
 
 /* -----------------------------------------------------------------------
-   Metadata
+   Metadata — uses cached getPublishedBook (same call as page body)
    ----------------------------------------------------------------------- */
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { bookId } = await params;
-
-  const book = await prisma.book.findFirst({
-    where: {
-      OR: [{ id: bookId }, { bookId }],
-      status: 'PUBLISHED',
-    },
-    select: { title: true, description: true, genre: true },
-  });
+  const book = await getPublishedBook(bookId); // ← cached, no duplicate query
 
   if (!book) {
     return { title: 'Book Not Found' };
@@ -44,91 +37,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 /* -----------------------------------------------------------------------
-   Data Fetching
-   ----------------------------------------------------------------------- */
-
-async function getBook(bookId: string) {
-  const book = await prisma.book.findFirst({
-    where: {
-      OR: [{ id: bookId }, { bookId }],
-      status: 'PUBLISHED',
-    },
-    select: {
-      id: true,
-      bookId: true,
-      title: true,
-      isbn: true,
-      genre: true,
-      description: true,
-      coverImageUrl: true,
-      publicationDate: true,
-      mrp: true,
-      language: true,
-      pageCount: true,
-      isEbookAvailable: true,
-      isPaperbackAvailable: true,
-      isFeatured: true,
-      author: {
-        select: {
-          id: true,
-          penName: true,
-          authorBio: true,
-          user: {
-            select: { name: true, avatarUrl: true },
-          },
-        },
-      },
-      platformListings: {
-        where: { isActive: true },
-        select: {
-          id: true,
-          platform: true,
-          externalUrl: true,
-        },
-      },
-    },
-  });
-
-  if (!book) return null;
-
-  const relatedBooks = await prisma.book.findMany({
-    where: {
-      genre: book.genre,
-      status: 'PUBLISHED',
-      id: { not: book.id },
-    },
-    take: 4,
-    orderBy: { publicationDate: 'desc' },
-    select: {
-      id: true,
-      bookId: true,
-      title: true,
-      genre: true,
-      coverImageUrl: true,
-      mrp: true,
-      author: {
-        select: {
-          penName: true,
-          user: { select: { name: true } },
-        },
-      },
-    },
-  });
-
-  return { ...book, relatedBooks };
-}
-
-/* -----------------------------------------------------------------------
-   Page Component
+   Page Component — single cached fetch + parallel related books
    ----------------------------------------------------------------------- */
 
 export default async function BookDetailPage({ params }: PageProps) {
   const { bookId } = await params;
-  const book = await getBook(bookId);
+  const book = await getPublishedBook(bookId); // ← same cache key as metadata — 0 extra queries
 
   if (!book) {
     notFound();
   }
+
+  // Fetch related books (parallel, separate cache key)
+  const relatedBooks = await getRelatedBooks(book.genre, book.id);
 
   const genreLabel = GENRES.find((g) => g.value === book.genre)?.label ?? book.genre;
   const authorName = book.author.penName ?? book.author.user.name ?? 'Unknown Author';
@@ -173,7 +94,7 @@ export default async function BookDetailPage({ params }: PageProps) {
             authorAvatar: book.author.user.avatarUrl,
             platforms,
           }}
-          relatedBooks={book.relatedBooks.map((rb) => ({
+          relatedBooks={relatedBooks.map((rb) => ({
             id: rb.id,
             bookId: rb.bookId,
             title: rb.title,

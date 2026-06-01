@@ -21,6 +21,11 @@ export default async function AuthorLayout({
     redirect('/login');
   }
 
+  // Admin users should use the admin panel, not the author portal
+  if (session.user.role === 'ADMIN') {
+    redirect('/admin/dashboard');
+  }
+
   const user = {
     name: session.user.name ?? 'Author',
     email: session.user.email ?? '',

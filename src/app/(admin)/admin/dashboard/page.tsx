@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { prisma } from '@/lib/prisma';
 import { formatCurrency } from '@/lib/utils';
+import { getAdminDashboardStats } from '@/lib/dal';
 import {
   Users,
   BookOpen,
@@ -18,36 +18,18 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminDashboardPage() {
-  const [
+  // Single batched call — 7 parallel queries via Promise.all,
+  // uses aggregate() instead of fetching all royalty records
+  const {
     totalAuthors,
     totalBooks,
     publishedBooks,
     openTickets,
-    royaltyRecords,
+    totalRoyaltyEarned,
+    totalRoyaltyPending,
     recentBooks,
     recentTickets,
-  ] = await Promise.all([
-    prisma.author.count(),
-    prisma.book.count(),
-    prisma.book.count({ where: { status: 'PUBLISHED' } }),
-    prisma.supportTicket.count({ where: { status: { in: ['OPEN', 'IN_PROGRESS'] } } }),
-    prisma.royaltyRecord.findMany({
-      select: { grossRoyalty: true, royaltyPaid: true, royaltyPending: true },
-    }),
-    prisma.book.findMany({
-      take: 5,
-      orderBy: { createdAt: 'desc' },
-      include: { author: { include: { user: { select: { name: true } } } } },
-    }),
-    prisma.supportTicket.findMany({
-      take: 5,
-      orderBy: { createdAt: 'desc' },
-      include: { author: { include: { user: { select: { name: true } } } } },
-    }),
-  ]);
-
-  const totalRoyaltyEarned = royaltyRecords.reduce((sum, r) => sum + r.grossRoyalty, 0);
-  const totalRoyaltyPending = royaltyRecords.reduce((sum, r) => sum + r.royaltyPending, 0);
+  } = await getAdminDashboardStats();
 
   const stats = [
     { label: 'Total Authors', value: totalAuthors, icon: Users, color: 'text-brand-primary', bg: 'bg-brand-primary/10', href: '/admin/authors' },

@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { getPublishedBook, getRelatedBooks } from '@/lib/dal';
 
+/**
+ * GET /api/bookstore/books/[id]
+ *
+ * Uses the shared DAL with React cache() so that if this route is called
+ * in the same request context as the page, queries are deduplicated.
+ */
 export async function GET(
   _request: NextRequest,
   { params }: { params: Promise<{ id: string }> },
@@ -8,49 +14,7 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const book = await prisma.book.findFirst({
-      where: {
-        OR: [{ id }, { bookId: id }],
-        status: 'PUBLISHED',
-      },
-      select: {
-        id: true,
-        bookId: true,
-        title: true,
-        isbn: true,
-        genre: true,
-        description: true,
-        coverImageUrl: true,
-        publicationDate: true,
-        mrp: true,
-        language: true,
-        pageCount: true,
-        isEbookAvailable: true,
-        isPaperbackAvailable: true,
-        isFeatured: true,
-        author: {
-          select: {
-            id: true,
-            penName: true,
-            authorBio: true,
-            user: {
-              select: {
-                name: true,
-                avatarUrl: true,
-              },
-            },
-          },
-        },
-        platformListings: {
-          where: { isActive: true },
-          select: {
-            id: true,
-            platform: true,
-            externalUrl: true,
-          },
-        },
-      },
-    });
+    const book = await getPublishedBook(id);
 
     if (!book) {
       return NextResponse.json(
@@ -59,32 +23,8 @@ export async function GET(
       );
     }
 
-    // Fetch related books (same genre, exclude current)
-    const relatedBooks = await prisma.book.findMany({
-      where: {
-        genre: book.genre,
-        status: 'PUBLISHED',
-        id: { not: book.id },
-      },
-      take: 4,
-      orderBy: { publicationDate: 'desc' },
-      select: {
-        id: true,
-        bookId: true,
-        title: true,
-        genre: true,
-        coverImageUrl: true,
-        mrp: true,
-        author: {
-          select: {
-            penName: true,
-            user: {
-              select: { name: true },
-            },
-          },
-        },
-      },
-    });
+    // Single additional query for related books
+    const relatedBooks = await getRelatedBooks(book.genre, book.id);
 
     return NextResponse.json({
       success: true,

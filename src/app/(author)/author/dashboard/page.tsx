@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { getAuthorDashboardData } from '@/lib/dal';
 import { formatCurrency, formatDate, cn } from '@/lib/utils';
 import { BOOK_STATUSES } from '@/constants';
 import {
@@ -26,15 +26,7 @@ export default async function AuthorDashboardPage() {
   const session = await auth();
   if (!session?.user) redirect('/login');
 
-  const author = await prisma.author.findFirst({
-    where: { userId: session.user.id },
-    include: {
-      books: {
-        orderBy: { createdAt: 'desc' },
-        take: 5,
-      },
-    },
-  });
+  const author = await getAuthorDashboardData(session.user.id); // ← cached DAL
 
   if (!author) {
     return (

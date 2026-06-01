@@ -30,12 +30,15 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  // ── Protected: /author/* → must be AUTHOR or ADMIN ──
+  // ── Protected: /author/* → must be AUTHOR (ADMIN → redirect to admin panel) ──
   if (pathname.startsWith('/author')) {
     if (!isLoggedIn) {
       return NextResponse.redirect(new URL('/login', nextUrl));
     }
-    if (role !== 'AUTHOR' && role !== 'ADMIN') {
+    if (role === 'ADMIN') {
+      return NextResponse.redirect(new URL('/admin/dashboard', nextUrl));
+    }
+    if (role !== 'AUTHOR') {
       return NextResponse.redirect(new URL('/', nextUrl));
     }
     return NextResponse.next();
