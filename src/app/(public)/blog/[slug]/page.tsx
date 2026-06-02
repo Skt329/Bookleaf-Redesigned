@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import { Navbar, Footer } from '@/components/layout';
-import { PageHeader } from '@/components/shared';
+import { PageHeader, FloatingDecorations } from '@/components/shared';
 import { BLOG_POSTS } from '@/constants/blog-data';
 import { cn } from '@/lib/utils';
 
@@ -50,8 +50,9 @@ export default async function BlogPostPage({ params }: PageProps) {
           ]}
         />
 
-        <section className="section bg-surface-background">
-          <div className="container-bookleaf max-w-3xl mx-auto">
+        <section className="relative overflow-hidden section bg-surface-background">
+          <FloatingDecorations />
+          <div className="container-bookleaf relative z-10 max-w-3xl mx-auto">
             {/* Back to Blog */}
             <div className="mb-8">
               <Link

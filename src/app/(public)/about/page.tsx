@@ -17,6 +17,7 @@ import {
 import { cn } from '@/lib/utils';
 import { OFFICE_ADDRESSES, TRUST_STATS } from '@/constants';
 import { Navbar, Footer } from '@/components/layout';
+import { FloatingDecorations } from '@/components/shared';
 
 /* -----------------------------------------------------------------------
    SEO Metadata
@@ -120,8 +121,9 @@ export default function AboutPage() {
         </section>
 
         {/* ===== STORY ===== */}
-        <section className="section bg-surface-background" aria-labelledby="story-heading">
-          <div className="container-bookleaf">
+        <section className="relative overflow-hidden section bg-surface-background" aria-labelledby="story-heading">
+          <FloatingDecorations />
+          <div className="container-bookleaf relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
               {/* Text */}
               <div>
@@ -204,8 +206,9 @@ export default function AboutPage() {
         </section>
 
         {/* ===== SHARK TANK BADGE ===== */}
-        <section className="section bg-surface-background" aria-label="Shark Tank India feature">
-          <div className="container-bookleaf">
+        <section className="relative overflow-hidden section bg-surface-background" aria-label="Shark Tank India feature">
+          <FloatingDecorations />
+          <div className="container-bookleaf relative z-10">
             <div className="card-accent p-8 md:p-12 text-center max-w-3xl mx-auto">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-accent/10 text-brand-accent text-caption font-bold uppercase tracking-wider mb-4">
                 <Star className="w-4 h-4 fill-brand-accent" />
@@ -263,8 +266,9 @@ export default function AboutPage() {
         </section>
 
         {/* ===== TEAM ===== */}
-        <section className="section bg-surface-background border-t border-border" aria-labelledby="team-heading">
-          <div className="container-bookleaf">
+        <section className="relative overflow-hidden section bg-surface-background border-t border-border" aria-labelledby="team-heading">
+          <FloatingDecorations />
+          <div className="container-bookleaf relative z-10">
             <div className="text-center mb-14">
               <h2
                 id="team-heading"

@@ -4,3 +4,5 @@ export { PageHeader } from './page-header';
 export { LoadingSpinner } from './loading-spinner';
 export { EmptyState } from './empty-state';
 export { VideoReviewPlayer } from './video-review-player';
+export { FloatingDecorations } from './floating-decorations';
+export { BookShowcase } from './book-showcase';

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { ArrowRight, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Navbar, Footer } from '@/components/layout';
-import { PageHeader, VideoReviewPlayer } from '@/components/shared';
+import { PageHeader, VideoReviewPlayer, FloatingDecorations } from '@/components/shared';
 
 /* -----------------------------------------------------------------------
    SEO Metadata
@@ -126,8 +126,9 @@ export default function ReviewsPage() {
         />
 
         {/* ===== OVERALL STATS ===== */}
-        <section className="section bg-surface-background animate-fade-in" aria-labelledby="rating-heading">
-          <div className="container-bookleaf">
+        <section className="relative overflow-hidden section bg-surface-background animate-fade-in" aria-labelledby="rating-heading">
+          <FloatingDecorations />
+          <div className="container-bookleaf relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center max-w-5xl mx-auto">
               {/* Left Column: Trust Stats */}
               <div className="lg:col-span-7 space-y-6">
@@ -214,8 +215,9 @@ export default function ReviewsPage() {
         </section>
 
         {/* ===== VIDEO REVIEWS ===== */}
-        <section className="section bg-surface-background border-t border-border" aria-labelledby="video-heading">
-          <div className="container-bookleaf">
+        <section className="relative overflow-hidden section bg-surface-background border-t border-border" aria-labelledby="video-heading">
+          <FloatingDecorations />
+          <div className="container-bookleaf relative z-10">
             <div className="text-center mb-12">
               <h2
                 id="video-heading"

@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ArrowRight, Mail } from 'lucide-react';
 import { Navbar, Footer } from '@/components/layout';
-import { PageHeader } from '@/components/shared';
+import { PageHeader, FloatingDecorations } from '@/components/shared';
 import { BlogContent } from './blog-content';
 
 /* -----------------------------------------------------------------------
@@ -34,11 +34,14 @@ export default function BlogPage() {
         />
 
         {/* ===== CATEGORIES & POSTS ===== */}
-        <section className="section bg-surface-background" aria-labelledby="blog-heading">
-          <h2 id="blog-heading" className="sr-only">
-            Blog Posts
-          </h2>
-          <BlogContent />
+        <section className="relative overflow-hidden section bg-surface-background" aria-labelledby="blog-heading">
+          <FloatingDecorations />
+          <div className="container-bookleaf relative z-10">
+            <h2 id="blog-heading" className="sr-only">
+              Blog Posts
+            </h2>
+            <BlogContent />
+          </div>
         </section>
 
         {/* ===== NEWSLETTER ===== */}

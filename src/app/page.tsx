@@ -27,6 +27,7 @@ import { formatCurrency } from '@/lib/utils';
 import { TRUST_STATS, PUBLISHING_PACKAGES } from '@/constants';
 import { Navbar } from '@/components/layout';
 import { Footer } from '@/components/layout';
+import { FloatingDecorations, BookShowcase } from '@/components/shared';
 
 /* ==========================================================================
    Animation Variants
@@ -127,122 +128,109 @@ function TypewriterText({ text, className }: { text: string; className?: string 
 function HeroSection() {
   return (
     <section
-      className="relative overflow-hidden bg-surface-background"
+      className="relative overflow-hidden bg-surface-background py-16 md:py-24 lg:py-32"
       aria-labelledby="hero-heading"
     >
-      {/* Decorative background */}
+      {/* Interactive Parallax Background Elements */}
+      <FloatingDecorations />
+
+      {/* Radial glow background */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        {/* Radial glow */}
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full opacity-[0.07]"
           style={{ background: 'radial-gradient(circle, var(--bl-brand-accent), transparent 70%)' }}
         />
-        {/* Floating leaf shapes */}
-        <motion.div
-          className="absolute top-20 right-[15%] w-16 h-16 rounded-full border-2 border-brand-accent/20"
-          animate={{ y: [0, -15, 0], rotate: [0, 10, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.div
-          className="absolute bottom-32 left-[10%] w-10 h-10 rounded-full bg-brand-primary/5"
-          animate={{ y: [0, 12, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-        />
-        <motion.div
-          className="absolute top-40 left-[20%] w-6 h-6 rounded-full bg-brand-accent/10"
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-        />
-        {/* Book silhouette */}
-        <motion.div
-          className="absolute bottom-20 right-[8%] hidden md:block"
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <BookOpen className="w-24 h-24 text-brand-primary/[0.06]" strokeWidth={1} />
-        </motion.div>
-        {/* Leaf icon */}
-        <motion.div
-          className="absolute top-32 right-[30%] hidden lg:block"
-          animate={{ y: [0, -12, 0], rotate: [0, 15, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <Leaf className="w-14 h-14 text-brand-primary/[0.08]" strokeWidth={1} />
-        </motion.div>
       </div>
 
-      <div className="container-bookleaf relative z-10 flex flex-col items-center text-center py-24 md:py-32 lg:py-40">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-accent/30 bg-brand-accent/5 text-brand-accent mb-8"
-        >
-          <Sparkles className="w-4 h-4" />
-          <span className="text-caption font-semibold tracking-wide uppercase">
-            As Seen on Shark Tank India
-          </span>
-        </motion.div>
+      <div className="container-bookleaf relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+          {/* Left Text Column */}
+          <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-accent/30 bg-brand-accent/5 text-brand-accent mb-6"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span className="text-caption font-semibold tracking-wide uppercase">
+                As Seen on Shark Tank India
+              </span>
+            </motion.div>
 
-        <motion.h1
-          id="hero-heading"
-          className="font-display text-display-lg md:text-display-xl text-text-primary max-w-4xl"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.15, ease: EASE_OUT_EXPO }}
-        >
-          India&apos;s Best{' '}
-          <span className="text-brand-accent">Self-Publishing</span>{' '}
-          Platform
-        </motion.h1>
+            <motion.h1
+              id="hero-heading"
+              className="font-display text-display-lg md:text-display-xl text-text-primary leading-tight max-w-4xl"
+              initial={{ opacity: 0, y: 24 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.15, ease: EASE_OUT_EXPO }}
+            >
+              India&apos;s Best{' '}
+              <span className="text-brand-accent">Self-Publishing</span>{' '}
+              Platform
+            </motion.h1>
 
-        <motion.p
-          className="mt-6 text-body-lg md:text-heading-sm text-text-secondary max-w-2xl font-body"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <TypewriterText text="Publish Your Book in Just 2 Weeks" />
-        </motion.p>
+            <motion.p
+              className="mt-6 text-body-lg md:text-heading-sm text-text-secondary font-body min-h-[1.7em]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <TypewriterText text="Publish Your Book in Just 2 Weeks" />
+            </motion.p>
 
-        <motion.div
-          className="mt-10 flex flex-col sm:flex-row gap-4"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.6 }}
-        >
-          <Link
-            href="/get-published"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg bg-brand-accent text-brand-dark font-semibold text-body-md hover:bg-brand-accent-hover transition-colors duration-150 shadow-gold no-underline"
-          >
-            Publish My Book
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            href="/bookstore"
-            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg border-2 border-brand-primary text-brand-primary font-semibold text-body-md hover:bg-brand-primary hover:text-text-inverse transition-colors duration-150 no-underline"
-          >
-            Explore Bookstore
-          </Link>
-        </motion.div>
+            <motion.div
+              className="mt-8 flex flex-col sm:flex-row gap-4 w-full sm:w-auto"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
+              <Link
+                href="/get-published"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg bg-brand-accent text-brand-dark font-semibold text-body-md hover:bg-brand-accent-hover transition-colors duration-150 shadow-gold no-underline"
+              >
+                Publish My Book
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/bookstore"
+                className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg border-2 border-brand-primary text-brand-primary font-semibold text-body-md hover:bg-brand-primary hover:text-text-inverse transition-colors duration-150 no-underline"
+              >
+                Explore Bookstore
+              </Link>
+            </motion.div>
 
-        {/* Quick stats */}
-        <motion.div
-          className="mt-16 flex flex-wrap justify-center gap-8 md:gap-12"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.85 }}
-        >
-          {TRUST_STATS.slice(0, 3).map((stat) => (
-            <div key={stat.label} className="text-center">
-              <p className="font-display text-heading-lg md:text-display-sm text-brand-primary font-bold">
-                <AnimatedCounter value={stat.value} />
-              </p>
-              <p className="text-caption text-text-muted mt-1">{stat.label}</p>
-            </div>
-          ))}
-        </motion.div>
+            {/* Quick stats */}
+            <motion.div
+              className="mt-12 flex flex-wrap justify-center lg:justify-start gap-8 md:gap-12 border-t border-border/60 pt-8 w-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.85 }}
+            >
+              {TRUST_STATS.slice(0, 3).map((stat) => (
+                <div key={stat.label} className="text-center lg:text-left">
+                  <p className="font-display text-heading-lg md:text-display-sm text-brand-primary font-bold">
+                    <AnimatedCounter value={stat.value} />
+                  </p>
+                  <p className="text-caption text-text-muted mt-1">{stat.label}</p>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Right Showcase Column */}
+          <div className="lg:col-span-5 w-full flex items-center justify-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="w-full"
+            >
+              <BookShowcase />
+            </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -323,10 +311,11 @@ function ServicesSection() {
   return (
     <section
       ref={ref}
-      className="section bg-surface-background"
+      className="relative overflow-hidden section bg-surface-background"
       aria-labelledby="services-heading"
     >
-      <div className="container-bookleaf">
+      <FloatingDecorations />
+      <div className="container-bookleaf relative z-10">
         <motion.div
           className="text-center mb-14"
           variants={fadeUp}
@@ -500,10 +489,11 @@ function HowItWorksSection() {
   return (
     <section
       ref={ref}
-      className="section bg-surface-background"
+      className="relative overflow-hidden section bg-surface-background"
       aria-labelledby="how-heading"
     >
-      <div className="container-bookleaf">
+      <FloatingDecorations />
+      <div className="container-bookleaf relative z-10">
         <motion.div
           className="text-center mb-14"
           variants={fadeUp}
@@ -745,10 +735,11 @@ function TestimonialsSection() {
   return (
     <section
       ref={ref}
-      className="section bg-surface-background"
+      className="relative overflow-hidden section bg-surface-background"
       aria-labelledby="testimonials-heading"
     >
-      <div className="container-bookleaf">
+      <FloatingDecorations />
+      <div className="container-bookleaf relative z-10">
         <motion.div
           className="text-center mb-14"
           variants={fadeUp}
