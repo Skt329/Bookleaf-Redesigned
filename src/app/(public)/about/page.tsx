@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   ArrowRight,
   BookOpen,
@@ -24,20 +25,26 @@ import { Navbar, Footer } from '@/components/layout';
 export const metadata: Metadata = {
   title: "About BookLeaf Publishing — Our Story & Mission",
   description:
-    "Learn about BookLeaf Publishing, India's most trusted self-publishing platform. Founded in 2020, featured on Shark Tank India. 12,000+ authors across 150+ countries.",
+    "Learn about BookLeaf Publishing, India's most trusted self-publishing platform. Founded in 2016, featured on Shark Tank India. 12,000+ authors across 150+ countries.",
 };
 
 /* -----------------------------------------------------------------------
    Static Data
    ----------------------------------------------------------------------- */
 
-const TEAM_MEMBERS = [
-  { name: 'Amir H. Shah', role: 'CEO & Founder', initials: 'AS' },
-  { name: 'Priya Menon', role: 'Chief Technology Officer', initials: 'PM' },
-  { name: 'Rohan Kapoor', role: 'Head of Publishing', initials: 'RK' },
-  { name: 'Ananya Das', role: 'Creative Director', initials: 'AD' },
-  { name: 'Vikram Joshi', role: 'Marketing Head', initials: 'VJ' },
-  { name: 'Meera Iyer', role: 'Author Relations Lead', initials: 'MI' },
+const FOUNDERS = [
+  {
+    name: 'Musavir Khurshid',
+    role: 'Co-founder & CEO',
+    image: 'https://static.wixstatic.com/media/6d2cdc_5d5f92d0f92e40d5be799e3cc0f60456~mv2.jpeg/v1/crop/x_363,y_334,w_784,h_788/fill/w_216,h_217,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/1701674518145.jpeg',
+    bio: 'Musavir is an Author, a bibliophile, a painter, an occasional photographer, and a full-time entrepreneur. With a hunger to always strive for the better, he has helped the team individually explore their innovative sides and implement it in their work.',
+  },
+  {
+    name: 'Shivangi Verma',
+    role: 'Co-founder & COO',
+    image: 'https://static.wixstatic.com/media/6d2cdc_ed510c82e54a4f2b837e26259c0d23f2~mv2.jpeg/v1/crop/x_250,y_707,w_713,h_716/fill/w_216,h_217,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/1705874438245.jpeg',
+    bio: 'Shivangi is the co-founder and COO at BookLeaf Publishing. She is devotedly involved in day to day running in the company. Apart from playing the key role, she is also an author and an avid reader, having many poetry collections to her credit.',
+  },
 ];
 
 const VALUES = [
@@ -95,7 +102,7 @@ export default function AboutPage() {
           <div className="container-bookleaf relative z-10 text-center py-16 md:py-24">
             <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-brand-accent/30 bg-brand-accent/10 text-brand-accent text-caption font-semibold tracking-wide uppercase mb-6">
               <Sparkles className="w-4 h-4" />
-              Est. 2020
+              Est. 2016
             </span>
 
             <h1
@@ -122,25 +129,19 @@ export default function AboutPage() {
                   id="story-heading"
                   className="font-display text-display-sm md:text-display-md text-text-primary"
                 >
-                  From a Small Idea to{' '}
-                  <span className="text-brand-accent">12,000+ Authors</span>
+                  Empowering Your Words,{' '}
+                  <span className="text-brand-accent">Enriching the World</span>
                 </h2>
 
                 <div className="mt-8 space-y-5 text-body-md text-text-secondary font-body leading-relaxed">
                   <p>
-                    BookLeaf Publishing was founded in 2020 with a single belief: every story
-                    deserves to be told, and every author deserves a partner who puts their
-                    vision first.
+                    At BookLeaf Publishing, we believe in the transformative power of stories and the profound impact they can make on our world. Our mission is to empower every budding author by turning their visions into reality. In our journey to revolutionize the publishing industry, we are committed to continuous innovation and evolution, ensuring that the process of publishing is not just effective but also enriching for every author.
                   </p>
                   <p>
-                    What started as a small team in Srinagar, Kashmir, has grown into India&apos;s
-                    most trusted self-publishing platform — now operating from three offices
-                    across two countries, serving authors in 150+ nations.
+                    Founded in 2016, BookLeaf Publishing emerged as a beacon for first-time authors seeking a reliable and reputable partner to guide them through the publishing landscape. As a vanguard of the self-publishing industry, we pride ourselves on our 8+ years of experience in empowering authors, ensuring their books are not only published but also resonate with readers universally.
                   </p>
                   <p>
-                    Our approach is simple — transparent pricing, professional-grade production,
-                    and an author-first philosophy that puts you in control of your creative
-                    journey from first draft to global distribution.
+                    At BookLeaf, we are more than just a publishing company; our platform is designed to break boundaries, providing authors with the freedom and independence they seek in bringing their stories to life. Join us in our mission to reshape the world of publishing, one story at a time.
                   </p>
                 </div>
 
@@ -262,33 +263,43 @@ export default function AboutPage() {
         </section>
 
         {/* ===== TEAM ===== */}
-        <section className="section bg-surface-background" aria-labelledby="team-heading">
+        <section className="section bg-surface-background border-t border-border" aria-labelledby="team-heading">
           <div className="container-bookleaf">
             <div className="text-center mb-14">
               <h2
                 id="team-heading"
-                className="font-display text-display-sm md:text-display-md text-text-primary"
+                className="font-display text-body-lg text-brand-primary font-bold uppercase tracking-widest"
               >
-                Meet the <span className="text-brand-accent">Team</span>
+                TEAM
               </h2>
-              <p className="mt-4 text-body-lg text-text-muted max-w-xl mx-auto font-body">
-                The people behind every published story.
-              </p>
+              <div className="w-12 h-0.5 bg-brand-primary mx-auto mt-2" />
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 max-w-5xl mx-auto">
-              {TEAM_MEMBERS.map((member) => (
-                <div key={member.name} className="text-center group">
-                  <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-brand-primary/10 border-2 border-border flex items-center justify-center mx-auto group-hover:border-brand-accent transition-colors duration-200">
-                    <span className="font-display text-heading-md md:text-heading-lg text-brand-primary font-bold">
-                      {member.initials}
-                    </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 max-w-4xl mx-auto">
+              {FOUNDERS.map((founder) => (
+                <div key={founder.name} className="flex flex-col items-center text-center group">
+                  {/* Photo wrapper */}
+                  <div className="relative w-44 h-44 md:w-52 md:h-52 rounded-full overflow-hidden border-4 border-border group-hover:border-brand-accent transition-colors duration-300 shadow-md">
+                    <Image
+                      src={founder.image}
+                      alt={`${founder.name} - ${founder.role}`}
+                      fill
+                      sizes="(max-width: 768px) 176px, 208px"
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
                   </div>
-                  <h3 className="mt-4 font-display text-body-sm text-text-primary font-semibold">
-                    {member.name}
+
+                  {/* Name and Role */}
+                  <h3 className="mt-6 font-display text-heading-xs text-text-primary font-bold">
+                    {founder.name}
                   </h3>
-                  <p className="mt-1 text-caption text-text-muted font-body">
-                    {member.role}
+                  <p className="text-body-sm text-text-secondary font-body italic mt-1">
+                    ({founder.role})
+                  </p>
+
+                  {/* Bio */}
+                  <p className="mt-4 text-body-sm text-text-muted leading-relaxed font-body max-w-md">
+                    {founder.bio}
                   </p>
                 </div>
               ))}

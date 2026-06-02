@@ -232,25 +232,25 @@ export default function ReviewsPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
               {[
                 {
-                  id: 'H6_9i7R1P4U',
+                  id: 'gT5s8VpZqXo',
                   author: 'Antara Chakrabarti',
                   book: 'An Ounce of Poetry',
                   gradient: 'from-brand-primary to-brand-primary-light',
                 },
                 {
-                  id: 'w9v8u7T6s5U',
+                  id: 'IQv1hNJgfR4',
                   author: 'Onkar Kulkarni',
                   book: 'Petrichor',
                   gradient: 'from-brand-accent to-brand-accent-light',
                 },
                 {
-                  id: '3C2Z0fV5c7U',
+                  id: 'SwAwvyNMt-o',
                   author: 'Ankit Kumar',
                   book: 'The Pondering Thoughts',
                   gradient: 'from-brand-primary-light to-brand-accent',
                 },
                 {
-                  id: 'm9n8b7V6c5U',
+                  id: 'yTeXLVidns0',
                   author: 'Asif Motorwala',
                   book: 'इकीस एहसास माफ़',
                   gradient: 'from-brand-accent to-brand-primary',

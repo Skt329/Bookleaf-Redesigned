@@ -873,6 +873,271 @@ function CtaSection() {
 }
 
 /* ==========================================================================
+   Section: Featured On
+   ========================================================================== */
+
+const MEDIA_PARTNERS = [
+  {
+    name: 'Deccan Chronicle',
+    href: 'https://www.deccanchronicle.com/lifestyle/booksart/places-via-notes-a-collection-of-poems-wins-emily-dickinson-award-1878210',
+    logo: (
+      <span className="font-serif italic font-bold tracking-tight text-heading-xs md:text-heading-sm text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 select-none">
+        Deccan Chronicle
+      </span>
+    ),
+  },
+  {
+    name: 'Hindustan Times',
+    href: 'https://www.hindustantimes.com/books/on-india-independent-books-and-ideas-101764834173472.html',
+    logo: (
+      <span className="font-sans font-black tracking-tight text-heading-xs md:text-heading-sm text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 lowercase select-none">
+        hindustantimes
+      </span>
+    ),
+  },
+  {
+    name: 'Deccan Herald',
+    href: 'https://www.deccanherald.com/brandspot/pr-spot/why-21-days-writing-challenge-by-bookleaf-publishing-became-a-sensation-1060590.html',
+    logo: (
+      <span className="font-serif font-black tracking-tight text-heading-xs md:text-heading-sm text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 select-none text-center">
+        Deccan Herald
+      </span>
+    ),
+  },
+  {
+    name: 'Mid-Day',
+    href: 'https://www.mid-day.com/mumbai/mumbai-news/article/mumbai-diary-saturday-dossier-23206515',
+    logo: (
+      <span className="font-sans italic font-black tracking-tight text-heading-xs md:text-heading-sm text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 uppercase select-none">
+        mid-day
+      </span>
+    ),
+  },
+  {
+    name: 'ThePrint',
+    href: 'https://theprint.in/theprint-valuead-initiative/bookleaf-publishings-21-day-writing-challenge-aims-to-encourage-expression-daily-writing/785687/',
+    logo: (
+      <div className="flex items-center gap-0.5 font-sans font-bold text-heading-xs md:text-heading-sm text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 select-none">
+        <span>The</span>
+        <span className="text-brand-accent">Print</span>
+      </div>
+    ),
+  },
+  {
+    name: 'Business Standard',
+    href: 'https://www.business-standard.com/content/press-releases-ani/delhi-publisher-launches-monthly-literary-events-to-address-growing-demand-for-open-mic-spaces-125110100429_1.html',
+    logo: (
+      <span className="font-serif font-extrabold tracking-tight text-[0.8rem] md:text-[0.85rem] text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 uppercase select-none text-center leading-tight">
+        Business Standard
+      </span>
+    ),
+  },
+  {
+    name: 'New Indian Express',
+    href: 'https://www.newindianexpress.com/cities/kochi/2024/Sep/17/twenty-one-days-of-soulitude',
+    logo: (
+      <div className="flex flex-col items-center text-center select-none leading-none border-y border-text-secondary/30 py-1.5 px-2">
+        <span className="font-serif font-black tracking-widest text-[0.65rem] md:text-[0.7rem] text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 uppercase">
+          NEW INDIAN EXPRESS
+        </span>
+      </div>
+    ),
+  },
+];
+
+function FeaturedOnSection() {
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
+
+  return (
+    <section
+      ref={ref}
+      className="section bg-surface-muted/30 border-y border-border py-12 md:py-16"
+      aria-labelledby="featured-heading"
+    >
+      <div className="container-bookleaf">
+        <motion.div
+          className="text-center mb-8"
+          variants={fadeUp}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+        >
+          <h2
+            id="featured-heading"
+            className="font-display text-body-lg text-brand-primary font-bold uppercase tracking-widest"
+          >
+            Featured On
+          </h2>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-6 md:gap-8 items-center justify-items-center"
+          variants={staggerContainer}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+        >
+          {MEDIA_PARTNERS.map((media, i) => (
+            <motion.a
+              key={media.name}
+              custom={i}
+              variants={scaleIn}
+              href={media.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center justify-center h-16 w-full max-w-[160px] transition-all duration-300 transform hover:scale-[1.05]"
+              title={`Read about BookLeaf Publishing on ${media.name}`}
+            >
+              {media.logo}
+            </motion.a>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ==========================================================================
+   Section: Our Distribution Channels
+   ========================================================================== */
+
+const CHANNELS = [
+  {
+    name: 'amazon.com',
+    logo: (
+      <div className="flex flex-col items-center select-none font-sans font-bold text-heading-xs text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200">
+        <span>amazon<span className="text-[0.65rem] text-brand-accent">.com</span></span>
+        <svg viewBox="0 0 100 15" className="w-16 h-2 text-brand-accent fill-current">
+          <path d="M0,2 Q40,15 100,2 Q95,5 90,8 Q80,2 75,0 Q82,5 90,8 Q50,15 0,2 Z" />
+        </svg>
+      </div>
+    ),
+  },
+  {
+    name: 'amazon kindle',
+    logo: (
+      <div className="flex items-center gap-1 font-sans font-medium text-heading-xs text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 select-none">
+        <span>amazon</span>
+        <span className="font-bold text-brand-accent">kindle</span>
+      </div>
+    ),
+  },
+  {
+    name: 'Google Play Books',
+    logo: (
+      <div className="flex items-center gap-2 font-sans font-semibold text-[0.85rem] text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 select-none">
+        <svg viewBox="0 0 24 24" className="w-5 h-5 text-status-info fill-current shrink-0">
+          <path d="M3 5.25v13.5a1.5 1.5 0 0 0 2.25 1.3l13.5-6.75a1.5 1.5 0 0 0 0-2.6L5.25 3.95A1.5 1.5 0 0 0 3 5.25z" />
+        </svg>
+        <div className="flex flex-col leading-none">
+          <span className="text-[0.65rem] text-text-muted">Google Play</span>
+          <span className="font-bold">Books</span>
+        </div>
+      </div>
+    ),
+  },
+  {
+    name: 'amazon.in',
+    logo: (
+      <div className="flex flex-col items-center select-none font-sans font-bold text-heading-xs text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200">
+        <span>amazon<span className="text-[0.65rem] text-brand-accent">.in</span></span>
+        <svg viewBox="0 0 100 15" className="w-16 h-2 text-brand-accent fill-current">
+          <path d="M0,2 Q40,15 100,2 Q95,5 90,8 Q80,2 75,0 Q82,5 90,8 Q50,15 0,2 Z" />
+        </svg>
+      </div>
+    ),
+  },
+  {
+    name: 'Flipkart',
+    logo: (
+      <div className="flex items-center gap-1.5 font-sans font-bold italic text-heading-xs text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 select-none">
+        <div className="w-6 h-6 rounded bg-brand-primary flex items-center justify-center text-text-inverse font-serif not-italic text-caption shrink-0">
+          F
+        </div>
+        <span>Flipkart</span>
+      </div>
+    ),
+  },
+  {
+    name: 'iBooks',
+    logo: (
+      <div className="flex items-center gap-1.5 font-sans font-semibold text-[0.85rem] text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 select-none">
+        <div className="w-5 h-5 rounded-full bg-gradient-to-tr from-brand-accent to-brand-accent-light flex items-center justify-center shrink-0 shadow-sm">
+          <BookOpen className="w-3 h-3 text-brand-dark" />
+        </div>
+        <span>Apple Books</span>
+      </div>
+    ),
+  },
+  {
+    name: 'Barnes & Noble',
+    logo: (
+      <span className="font-serif font-black tracking-wider text-[0.8rem] md:text-[0.85rem] text-brand-primary/80 group-hover:text-brand-primary transition-colors duration-200 uppercase select-none border-b-2 border-brand-accent pb-0.5">
+        BARNES & NOBLE
+      </span>
+    ),
+  },
+  {
+    name: 'Kobo',
+    logo: (
+      <div className="flex items-center gap-1 font-sans font-black text-heading-xs text-text-secondary/70 group-hover:text-text-primary transition-colors duration-200 select-none">
+        <span className="lowercase">kobo</span>
+        <span className="w-2 h-2 rounded-full bg-brand-accent" />
+      </div>
+    ),
+  },
+];
+
+function DistributionSection() {
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true, margin: '-80px' });
+
+  return (
+    <section
+      ref={ref}
+      className="section bg-surface-muted/30 border-y border-border py-16"
+      aria-labelledby="distribution-heading"
+    >
+      <div className="container-bookleaf text-center">
+        <motion.div
+          className="mb-12"
+          variants={fadeUp}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+        >
+          <h2
+            id="distribution-heading"
+            className="font-display text-display-xs md:text-display-sm text-text-primary"
+          >
+            Our <span className="text-brand-accent">Distribution Channels</span>
+          </h2>
+          <p className="mt-3 text-body-md text-text-muted max-w-xl mx-auto font-body">
+            We distribute your books across the world&apos;s leading paperback and eBook storefronts.
+          </p>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 items-center justify-items-center max-w-4xl mx-auto"
+          variants={staggerContainer}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+        >
+          {CHANNELS.map((channel, i) => (
+            <motion.div
+              key={channel.name}
+              custom={i}
+              variants={scaleIn}
+              className="group flex items-center justify-center h-16 w-full max-w-[165px] p-4 bg-surface-card rounded-xl border border-border shadow-sm hover:shadow-md hover:border-brand-accent/30 transition-all duration-300"
+            >
+              {channel.logo}
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+/* ==========================================================================
    Page: Home
    ========================================================================== */
 
@@ -883,10 +1148,12 @@ export default function HomePage() {
       <main>
         <HeroSection />
         <TrustMarqueeSection />
+        <FeaturedOnSection />
         <ServicesSection />
         <PackagesSection />
         <HowItWorksSection />
         <BestsellersSection />
+        <DistributionSection />
         <TestimonialsSection />
         <CtaSection />
       </main>

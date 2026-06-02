@@ -194,10 +194,10 @@ export const NAV_LINKS_ADMIN = [
 /** Social media profile links. */
 export const SOCIAL_LINKS = [
   { label: 'Instagram', href: 'https://instagram.com/bookleafpublishing', icon: 'Instagram' },
-  { label: 'Facebook', href: 'https://facebook.com/bookleafpublishing', icon: 'Facebook' },
-  { label: 'Twitter / X', href: 'https://x.com/bookleafpublishing', icon: 'Twitter' },
-  { label: 'LinkedIn', href: 'https://linkedin.com/company/bookleafpublishing', icon: 'Linkedin' },
-  { label: 'YouTube', href: 'https://youtube.com/@bookleafpublishing', icon: 'Youtube' },
+  { label: 'Facebook', href: 'https://www.facebook.com/bookleafpublishing', icon: 'Facebook' },
+  { label: 'Twitter / X', href: 'https://twitter.com/bookleafpub', icon: 'Twitter' },
+  { label: 'LinkedIn', href: 'https://in.linkedin.com/company/bookleaf-publishing', icon: 'Linkedin' },
+  { label: 'YouTube', href: 'https://www.youtube.com/channel/UCJAAi_L1JH8OZSTbtYZW3OQ', icon: 'Youtube' },
 ] as const;
 
 /** Physical office addresses (from live site). */
