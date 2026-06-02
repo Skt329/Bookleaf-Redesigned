@@ -61,15 +61,16 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
         token.role = (user as { role: UserRole }).role;
       }
 
-      if (
-        (trigger === 'signIn' || !token.authorId) &&
-        token.role === 'AUTHOR'
-      ) {
-        const author = await prisma.author.findFirst({
-          where: { userId: token.id as string },
-          select: { id: true },
-        });
-        token.authorId = author?.id ?? null;
+      if (trigger === 'signIn' || trigger === 'update' || (token.role === 'AUTHOR' && !token.authorId)) {
+        if (token.role === 'AUTHOR') {
+          const author = await prisma.author.findUnique({
+            where: { userId: token.id as string },
+            select: { id: true },
+          });
+          token.authorId = author?.id ?? null;
+        } else {
+          token.authorId = null;
+        }
       }
 
       return token;

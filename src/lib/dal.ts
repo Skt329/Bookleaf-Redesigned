@@ -185,7 +185,7 @@ export const getAdminDashboardStats = cache(async () => {
  * Cached per request.
  */
 export const getAuthorDashboardData = cache(async (userId: string) => {
-  return prisma.author.findFirst({
+  return prisma.author.findUnique({
     where: { userId },
     include: {
       books: {
@@ -201,7 +201,7 @@ export const getAuthorDashboardData = cache(async (userId: string) => {
  * Lightweight query — only returns id.
  */
 export const getAuthorByUserId = cache(async (userId: string) => {
-  return prisma.author.findFirst({
+  return prisma.author.findUnique({
     where: { userId },
     select: { id: true },
   });

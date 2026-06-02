@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { ArrowRight, Play, Star } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Navbar, Footer } from '@/components/layout';
-import { PageHeader } from '@/components/shared';
+import { PageHeader, VideoReviewPlayer } from '@/components/shared';
 
 /* -----------------------------------------------------------------------
    SEO Metadata
@@ -125,32 +126,44 @@ export default function ReviewsPage() {
         />
 
         {/* ===== OVERALL STATS ===== */}
-        <section className="section bg-surface-background" aria-labelledby="rating-heading">
+        <section className="section bg-surface-background animate-fade-in" aria-labelledby="rating-heading">
           <div className="container-bookleaf">
-            <div className="card-accent p-8 md:p-12 max-w-3xl mx-auto text-center">
-              <h2 id="rating-heading" className="sr-only">Overall Rating</h2>
-              <p className="font-display text-display-lg md:text-display-xl text-brand-accent font-bold">
-                4.8
-              </p>
-              <div className="flex justify-center mt-3">
-                <StarRating count={5} size="w-6 h-6" />
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center max-w-5xl mx-auto">
+              {/* Left Column: Trust Stats */}
+              <div className="lg:col-span-7 space-y-6">
+                <h2 id="rating-heading" className="font-display text-display-sm md:text-display-md text-text-primary leading-tight">
+                  India&apos;s Most <span className="text-brand-accent">Trusted</span> Self-Publishing Partner
+                </h2>
+                <p className="font-body text-body-md text-text-secondary leading-relaxed">
+                  We are rated <strong className="text-text-primary">4.8/5</strong> based on thousands of verified author reviews on Google and Trustpilot. Join our growing community of writers who realized their dream of becoming published authors.
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { label: 'Authors Published', value: '12,000+' },
+                    { label: 'Countries Distributed', value: '150+' },
+                    { label: 'Rating on Google', value: '4.8 ★' },
+                  ].map((stat) => (
+                    <div key={stat.label} className="p-4 rounded-xl bg-surface-card border border-border text-center shadow-sm">
+                      <p className="font-display text-heading-sm text-brand-primary font-bold">
+                        {stat.value}
+                      </p>
+                      <p className="text-[0.68rem] text-text-muted font-body font-semibold mt-1 uppercase tracking-wider">{stat.label}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <p className="mt-4 text-body-lg text-text-secondary font-body">
-                from <strong className="text-text-primary">3,700+</strong> Google Reviews
-              </p>
-              <div className="mt-6 flex flex-wrap justify-center gap-4">
-                {[
-                  { label: 'Authors Published', value: '12,000+' },
-                  { label: 'Countries', value: '150+' },
-                  { label: 'Repeat Authors', value: '35%' },
-                ].map((stat) => (
-                  <div key={stat.label} className="px-5 py-3 rounded-lg bg-surface-muted border border-border">
-                    <p className="font-display text-heading-md text-brand-primary font-bold">
-                      {stat.value}
-                    </p>
-                    <p className="text-caption text-text-muted font-body">{stat.label}</p>
-                  </div>
-                ))}
+              
+              {/* Right Column: Trust Badge Image */}
+              <div className="lg:col-span-5 flex justify-center">
+                <div className="relative group overflow-hidden rounded-2xl border border-brand-accent/20 bg-brand-primary/5 p-2 shadow-gold max-w-[340px]">
+                  <Image
+                    src="/reviews_trust_badge.png"
+                    alt="BookLeaf Publishing 4.8★ Rating trust badge"
+                    width={320}
+                    height={320}
+                    className="rounded-xl object-contain hover:scale-[1.02] transition-transform duration-300"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -201,27 +214,79 @@ export default function ReviewsPage() {
         </section>
 
         {/* ===== VIDEO REVIEWS ===== */}
-        <section className="section bg-surface-background" aria-labelledby="video-heading">
+        <section className="section bg-surface-background border-t border-border" aria-labelledby="video-heading">
           <div className="container-bookleaf">
-            <div className="card overflow-hidden max-w-3xl mx-auto">
-              <div className="h-64 md:h-80 bg-gradient-to-br from-brand-primary to-brand-primary-light flex items-center justify-center relative">
-                <div className="w-20 h-20 rounded-full bg-surface-card/20 backdrop-blur-sm flex items-center justify-center border-2 border-text-inverse/30 cursor-pointer hover:scale-110 transition-transform duration-200">
-                  <Play className="w-8 h-8 text-text-inverse ml-1" fill="currentColor" />
+            <div className="text-center mb-12">
+              <h2
+                id="video-heading"
+                className="font-display text-display-sm md:text-display-md text-text-primary"
+              >
+                Watch Our Authors Share Their <span className="text-brand-accent">Stories</span>
+              </h2>
+              <p className="mt-4 text-body-lg text-text-secondary font-body max-w-xl mx-auto">
+                Hear directly from published BookLeaf authors about their
+                experience — from first draft to published book.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              {[
+                {
+                  id: 'H6_9i7R1P4U',
+                  author: 'Antara Chakrabarti',
+                  book: 'An Ounce of Poetry',
+                  gradient: 'from-brand-primary to-brand-primary-light',
+                },
+                {
+                  id: 'w9v8u7T6s5U',
+                  author: 'Onkar Kulkarni',
+                  book: 'Petrichor',
+                  gradient: 'from-brand-accent to-brand-accent-light',
+                },
+                {
+                  id: '3C2Z0fV5c7U',
+                  author: 'Ankit Kumar',
+                  book: 'The Pondering Thoughts',
+                  gradient: 'from-brand-primary-light to-brand-accent',
+                },
+                {
+                  id: 'm9n8b7V6c5U',
+                  author: 'Asif Motorwala',
+                  book: 'इकीस एहसास माफ़',
+                  gradient: 'from-brand-accent to-brand-primary',
+                },
+              ].map((video) => (
+                <div key={video.id} className="card overflow-hidden flex flex-col justify-between hover:shadow-lg transition-all duration-300 border border-border animate-fade-in">
+                  <VideoReviewPlayer
+                    videoId={video.id}
+                    title={`${video.author} - BookLeaf Author Review`}
+                    gradient={video.gradient}
+                  />
+                  <div className="p-5 border-t border-border-muted bg-surface-card flex flex-col justify-between flex-grow">
+                    <div>
+                      <p className="font-display text-heading-xs text-text-primary font-bold">
+                        {video.author}
+                      </p>
+                      <p className="text-caption text-text-secondary font-body italic mt-1">
+                        Author of &ldquo;{video.book}&rdquo;
+                      </p>
+                    </div>
+                    <div className="mt-4 flex items-center justify-between border-t border-border-muted pt-3">
+                      <span className="text-[0.7rem] font-semibold text-status-success bg-status-success/10 px-2 py-0.5 rounded-full font-body">
+                        ✓ Verified Author
+                      </span>
+                      <a
+                        href={`https://www.youtube.com/watch?v=${video.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-0.5 text-[0.75rem] font-semibold text-brand-primary hover:text-brand-accent transition-colors"
+                      >
+                        Watch on YouTube ↗
+                      </a>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="p-6 md:p-8 text-center">
-                <h2
-                  id="video-heading"
-                  className="font-display text-heading-lg text-text-primary"
-                >
-                  Watch Our Authors Share Their{' '}
-                  <span className="text-brand-accent">Stories</span>
-                </h2>
-                <p className="mt-3 text-body-md text-text-secondary font-body max-w-lg mx-auto">
-                  Hear directly from published BookLeaf authors about their
-                  experience — from first draft to published book.
-                </p>
-              </div>
+              ))}
             </div>
           </div>
         </section>

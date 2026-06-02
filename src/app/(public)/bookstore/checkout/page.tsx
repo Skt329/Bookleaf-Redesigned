@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { Navbar, Footer } from '@/components/layout';
 import { PageHeader } from '@/components/shared';
 import { CheckoutForm } from './checkout-form';
@@ -24,7 +25,9 @@ export default function CheckoutPage() {
         />
         <section className="section-padding">
           <div className="container-width">
-            <CheckoutForm />
+            <Suspense fallback={<div className="text-center py-12 text-text-muted">Loading checkout form...</div>}>
+              <CheckoutForm />
+            </Suspense>
           </div>
         </section>
       </main>

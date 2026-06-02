@@ -158,6 +158,7 @@ export const NAV_LINKS_PUBLIC = [
   { label: 'Get Published', href: '/get-published' },
   { label: 'Writing Challenge', href: '/writing-challenge' },
   { label: 'Bookstore', href: '/bookstore' },
+  { label: 'Reviews', href: '/reviews' },
   { label: 'Blog', href: '/blog' },
   { label: 'FAQ', href: '/faq' },
   { label: 'Contact', href: '/contact' },

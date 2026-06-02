@@ -185,6 +185,35 @@ function CellValue({ value }: { value: boolean | string }) {
 
 export default function GetPublishedContent() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [loadingPkg, setLoadingPkg] = useState<string | null>(null);
+
+  const handlePurchase = async (packageName: string) => {
+    setLoadingPkg(packageName);
+    try {
+      const res = await fetch('/api/packages/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ packageName: packageName.toUpperCase() }),
+      });
+
+      if (res.status === 401) {
+        window.location.href = `/login?callback=/get-published`;
+        return;
+      }
+
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || 'Failed to initiate purchase');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Failed to connect to checkout service. Please try again.');
+    } finally {
+      setLoadingPkg(null);
+    }
+  };
 
   const packagesRef = useRef<HTMLElement>(null);
   const stepsRef = useRef<HTMLElement>(null);
@@ -295,6 +324,7 @@ export default function GetPublishedContent() {
             >
               {PUBLISHING_PACKAGES.map((pkg, i) => {
                 const isPopular = 'popular' in pkg && pkg.popular;
+                const isLoading = loadingPkg === pkg.name;
                 return (
                   <motion.div
                     key={pkg.name}
@@ -337,18 +367,19 @@ export default function GetPublishedContent() {
                       ))}
                     </ul>
 
-                    <Link
-                      href="/contact"
+                    <button
+                      onClick={() => handlePurchase(pkg.name)}
+                      disabled={loadingPkg !== null}
                       className={cn(
-                        'mt-8 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-body-md transition-colors duration-150 no-underline',
+                        'mt-8 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg font-semibold text-body-md transition-all duration-150 border-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed',
                         isPopular
                           ? 'bg-brand-accent text-brand-dark hover:bg-brand-accent-hover shadow-gold'
                           : 'bg-brand-primary text-text-inverse hover:bg-brand-primary-hover'
                       )}
                     >
-                      Get Started
-                      <ArrowRight className="w-4 h-4" />
-                    </Link>
+                      {isLoading ? 'Processing...' : 'Get Started'}
+                      {!isLoading && <ArrowRight className="w-4 h-4" />}
+                    </button>
                   </motion.div>
                 );
               })}

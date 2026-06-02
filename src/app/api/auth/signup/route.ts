@@ -21,11 +21,6 @@ const signupSchema = z.object({
   password: z.string().min(8, 'Password must be at least 8 characters'),
 });
 
-/** Generate a sequential author ID like AUTH001 */
-async function generateAuthorId(): Promise<string> {
-  const count = await prisma.author.count();
-  return `AUTH${String(count + 1).padStart(3, '0')}`;
-}
 
 export async function POST(request: Request) {
   try {
@@ -56,7 +51,17 @@ export async function POST(request: Request) {
 
     // Create User + Author in a transaction
     const user = await prisma.$transaction(async (tx) => {
-      const authorId = await generateAuthorId();
+      await tx.$executeRawUnsafe('LOCK TABLE authors IN EXCLUSIVE MODE;');
+
+      const lastAuthor = await tx.author.findFirst({
+        orderBy: { authorId: 'desc' },
+        select: { authorId: true },
+      });
+
+      const nextNum = lastAuthor
+        ? parseInt(lastAuthor.authorId.replace('AUTH', ''), 10) + 1
+        : 1;
+      const authorId = `AUTH${String(nextNum).padStart(3, '0')}`;
 
       const newUser = await tx.user.create({
         data: {

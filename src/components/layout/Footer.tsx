@@ -48,6 +48,7 @@ const QUICK_LINKS = [
   { label: 'Get Published', href: '/get-published' },
   { label: 'Writing Challenge', href: '/writing-challenge' },
   { label: 'Bookstore', href: '/bookstore' },
+  { label: 'Reviews', href: '/reviews' },
   { label: 'Royalty Calculator', href: '/royalty-calculator' },
   { label: 'Careers', href: '/careers' },
 ] as const;

@@ -4,23 +4,12 @@ import { prisma } from '@/lib/prisma';
 
 interface RouteParams { params: Promise<{ challengeId: string }> }
 
-async function getNextBookId(): Promise<string> {
-  const lastBook = await prisma.book.findFirst({ orderBy: { bookId: 'desc' } });
-  const lastNum = lastBook ? parseInt(lastBook.bookId.replace('BK', ''), 10) : 0;
-  return `BK${String(lastNum + 1).padStart(3, '0')}`;
-}
-
-async function getNextAuthorId(): Promise<string> {
-  const lastAuthor = await prisma.author.findFirst({ orderBy: { authorId: 'desc' } });
-  const lastNum = lastAuthor ? parseInt(lastAuthor.authorId.replace('AUTH', ''), 10) : 0;
-  return `AUTH${String(lastNum + 1).padStart(3, '0')}`;
-}
-
-async function publishRegistration(
+async function publishRegistrationTx(
+  tx: any,
   registrationId: string,
   challengeTitle: string,
 ) {
-  const reg = await prisma.writingChallengeRegistration.findUnique({
+  const reg = await tx.writingChallengeRegistration.findUnique({
     where: { id: registrationId },
     include: { user: true, author: true },
   });
@@ -33,8 +22,14 @@ async function publishRegistration(
 
   // If user is CHALLENGER, upgrade to AUTHOR and create Author record
   if (reg.user.role === 'CHALLENGER') {
-    const newAuthorId = await getNextAuthorId();
-    authorRecord = await prisma.author.create({
+    const lastAuthor = await tx.author.findFirst({
+      orderBy: { authorId: 'desc' },
+      select: { authorId: true },
+    });
+    const lastAuthorNum = lastAuthor ? parseInt(lastAuthor.authorId.replace('AUTH', ''), 10) : 0;
+    const newAuthorId = `AUTH${String(lastAuthorNum + 1).padStart(3, '0')}`;
+
+    authorRecord = await tx.author.create({
       data: {
         userId: reg.user.id,
         authorId: newAuthorId,
@@ -42,12 +37,14 @@ async function publishRegistration(
         publishingPackage: 'WRITING_CHALLENGE',
       },
     });
-    await prisma.user.update({
+
+    await tx.user.update({
       where: { id: reg.user.id },
       data: { role: 'AUTHOR' },
     });
+
     // Link registration to the new author
-    await prisma.writingChallengeRegistration.update({
+    await tx.writingChallengeRegistration.update({
       where: { id: registrationId },
       data: { authorId: authorRecord.id },
     });
@@ -57,11 +54,17 @@ async function publishRegistration(
     throw new Error(`No author record for registration ${registrationId}`);
   }
 
-  const bookId = await getNextBookId();
+  const lastBook = await tx.book.findFirst({
+    orderBy: { bookId: 'desc' },
+    select: { bookId: true },
+  });
+  const lastBookNum = lastBook ? parseInt(lastBook.bookId.replace('BK', ''), 10) : 0;
+  const bookId = `BK${String(lastBookNum + 1).padStart(3, '0')}`;
+
   const authorName = reg.user.name || 'Unknown Author';
 
   // Create the book
-  await prisma.book.create({
+  await tx.book.create({
     data: {
       bookId,
       authorId: authorRecord.id,
@@ -74,13 +77,13 @@ async function publishRegistration(
   });
 
   // Mark registration as published
-  await prisma.writingChallengeRegistration.update({
+  await tx.writingChallengeRegistration.update({
     where: { id: registrationId },
     data: { bookPublished: true },
   });
 
   // Create admin notification
-  await prisma.adminNotification.create({
+  await tx.adminNotification.create({
     data: {
       type: 'CHALLENGE_BOOKS_READY',
       title: 'Challenge Book Published',
@@ -110,26 +113,37 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
   try {
     if (body.all === true) {
-      // Bulk publish all ready registrations
-      const readyRegistrations = await prisma.writingChallengeRegistration.findMany({
-        where: {
-          challengeId,
-          completedChallenge: true,
-          bookPublished: false,
-        },
-      });
+      // Bulk publish all ready registrations in a transaction with table locks
+      const results = await prisma.$transaction(async (tx) => {
+        await tx.$executeRawUnsafe('LOCK TABLE authors IN EXCLUSIVE MODE;');
+        await tx.$executeRawUnsafe('LOCK TABLE books IN EXCLUSIVE MODE;');
 
-      const results = [];
-      for (const reg of readyRegistrations) {
-        const result = await publishRegistration(reg.id, challenge.title);
-        results.push(result);
-      }
+        const readyRegistrations = await tx.writingChallengeRegistration.findMany({
+          where: {
+            challengeId,
+            completedChallenge: true,
+            bookPublished: false,
+          },
+        });
+
+        const tempResults = [];
+        for (const reg of readyRegistrations) {
+          const result = await publishRegistrationTx(tx, reg.id, challenge.title);
+          tempResults.push(result);
+        }
+        return tempResults;
+      });
 
       return NextResponse.json({ success: true, publishedCount: results.length, results });
     }
 
     if (body.registrationId) {
-      const result = await publishRegistration(body.registrationId, challenge.title);
+      // Publish single registration in a transaction with table locks
+      const result = await prisma.$transaction(async (tx) => {
+        await tx.$executeRawUnsafe('LOCK TABLE authors IN EXCLUSIVE MODE;');
+        await tx.$executeRawUnsafe('LOCK TABLE books IN EXCLUSIVE MODE;');
+        return await publishRegistrationTx(tx, body.registrationId, challenge.title);
+      });
       return NextResponse.json({ success: true, publishedCount: 1, results: [result] });
     }
 

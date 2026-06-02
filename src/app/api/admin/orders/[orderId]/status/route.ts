@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { stripe } from '@/lib/stripe';
 import type { OrderStatus } from '@prisma/client';
 
 interface RouteParams { params: Promise<{ orderId: string }> }
@@ -45,6 +46,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
   const updateData: Record<string, unknown> = { status };
   if (status === 'SHIPPED' && trackingNumber) {
     updateData.trackingNumber = trackingNumber;
+  }
+
+  if (status === 'REFUNDED' && order.stripePaymentIntentId && order.stripePaymentStatus === 'paid') {
+    try {
+      await stripe.refunds.create({
+        payment_intent: order.stripePaymentIntentId,
+      });
+      updateData.stripePaymentStatus = 'refunded';
+    } catch (refundError) {
+      console.error('[STRIPE_REFUND_ERROR]', refundError);
+      return NextResponse.json({ error: 'Stripe refund failed' }, { status: 500 });
+    }
   }
 
   const updated = await prisma.order.update({

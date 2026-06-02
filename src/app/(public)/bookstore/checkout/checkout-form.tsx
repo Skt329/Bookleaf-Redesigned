@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ShoppingBag, Truck, CreditCard, CheckCircle2 } from 'lucide-react';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, cn } from '@/lib/utils';
+import { useCartStore } from '@/lib/stores/cart-store';
 
 interface CartItem {
   bookId: string;
@@ -18,19 +19,36 @@ type CheckoutStep = 'details' | 'review' | 'processing' | 'success';
 
 export function CheckoutForm() {
   const router = useRouter();
-  const [step, setStep] = useState<CheckoutStep>('details');
+  const searchParams = useSearchParams();
+  const stripeSuccess = searchParams.get('stripe_success');
+  const queryOrder = searchParams.get('order');
+  const queryEmail = searchParams.get('email');
+
+  const clearCart = useCartStore((s) => s.clearCart);
+
+  const [step, setStep] = useState<CheckoutStep>(() => {
+    return stripeSuccess === 'true' ? 'success' : 'details';
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [orderNumber, setOrderNumber] = useState('');
+  const [orderNumber, setOrderNumber] = useState(() => queryOrder || '');
   const [error, setError] = useState('');
 
   // Guest details
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => queryEmail || '');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [pincode, setPincode] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<'STRIPE' | 'COD'>('STRIPE');
+
+  useEffect(() => {
+    if (stripeSuccess === 'true') {
+      localStorage.removeItem('bookleaf-cart');
+      clearCart();
+    }
+  }, [stripeSuccess, clearCart]);
 
   // Cart items from localStorage
   const [cartItems] = useState<CartItem[]>(() => {
@@ -62,6 +80,7 @@ export function CheckoutForm() {
           guestName: name,
           guestEmail: email,
           guestPhone: phone,
+          paymentMethod,
           shippingAddress: { address, city, state, pincode },
           items: cartItems.map((item) => ({
             bookId: item.bookId,
@@ -78,11 +97,17 @@ export function CheckoutForm() {
         throw new Error(data.error || 'Checkout failed');
       }
 
+      if (data.data.stripeUrl) {
+        window.location.href = data.data.stripeUrl;
+        return;
+      }
+
       setOrderNumber(data.data.orderNumber);
       setStep('success');
 
       // Clear cart
       localStorage.removeItem('bookleaf-cart');
+      clearCart();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong');
       setStep('details');
@@ -401,6 +426,41 @@ export function CheckoutForm() {
                     </p>
                   </div>
                 ))}
+              </div>
+
+              {/* Payment Method Selector */}
+              <div className="space-y-3">
+                <h3 className="text-body-sm font-semibold text-text-primary">
+                  Payment Method
+                </h3>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('STRIPE')}
+                    className={cn(
+                      'flex flex-col items-center justify-center p-3 rounded-lg border-2 text-center transition-all cursor-pointer',
+                      paymentMethod === 'STRIPE'
+                        ? 'border-brand-primary bg-brand-primary/5 text-brand-primary font-semibold'
+                        : 'border-border hover:border-text-muted bg-transparent text-text-secondary',
+                    )}
+                  >
+                    <CreditCard className="size-5 mb-1" />
+                    <span className="text-caption">Online / Card</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('COD')}
+                    className={cn(
+                      'flex flex-col items-center justify-center p-3 rounded-lg border-2 text-center transition-all cursor-pointer',
+                      paymentMethod === 'COD'
+                        ? 'border-brand-primary bg-brand-primary/5 text-brand-primary font-semibold'
+                        : 'border-border hover:border-text-muted bg-transparent text-text-secondary',
+                    )}
+                  >
+                    <Truck className="size-5 mb-1" />
+                    <span className="text-caption">Cash on Delivery</span>
+                  </button>
+                </div>
               </div>
 
               <button

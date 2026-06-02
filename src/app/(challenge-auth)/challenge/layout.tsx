@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Challenge — Join #TheWriteAngle | BookLeaf Publishing',
@@ -16,8 +18,17 @@ export default function ChallengeAuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface-background px-4 py-12">
-      <div className="w-full max-w-md">{children}</div>
+    <main className="relative flex min-h-screen items-center justify-center bg-surface-background px-4 py-12">
+      <div className="absolute top-6 left-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-body-sm font-medium text-text-secondary hover:text-brand-primary transition-colors duration-150"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Home
+        </Link>
+      </div>
+      <div className="w-full max-w-md mt-6">{children}</div>
     </main>
   );
 }

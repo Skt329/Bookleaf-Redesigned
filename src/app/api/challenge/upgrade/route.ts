@@ -62,19 +62,21 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Generate next sequential authorId
-    const lastAuthor = await prisma.author.findFirst({
-      orderBy: { authorId: 'desc' },
-      select: { authorId: true },
-    });
-
-    const nextNum = lastAuthor
-      ? parseInt(lastAuthor.authorId.replace('AUTH', ''), 10) + 1
-      : 1;
-    const newAuthorId = `AUTH${String(nextNum).padStart(3, '0')}`;
-
     // Transaction: upgrade user, create author, update registration
     const result = await prisma.$transaction(async (tx) => {
+      await tx.$executeRawUnsafe('LOCK TABLE authors IN EXCLUSIVE MODE;');
+
+      // Generate next sequential authorId inside transaction
+      const lastAuthor = await tx.author.findFirst({
+        orderBy: { authorId: 'desc' },
+        select: { authorId: true },
+      });
+
+      const nextNum = lastAuthor
+        ? parseInt(lastAuthor.authorId.replace('AUTH', ''), 10) + 1
+        : 1;
+      const newAuthorId = `AUTH${String(nextNum).padStart(3, '0')}`;
+
       // 1. Update user role
       await tx.user.update({
         where: { id: registration.userId },
