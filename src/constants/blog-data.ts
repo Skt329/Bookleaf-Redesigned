@@ -14,6 +14,7 @@ export interface BlogPost {
   category: string;
   gradient: string;
   readTime: string;
+  coverImage: string;
   sections: BlogPostSection[];
 }
 
@@ -29,6 +30,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Publishing',
     gradient: 'from-brand-primary to-brand-primary-light',
     readTime: '6 min read',
+    coverImage: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?q=80&w=800&auto=format&fit=crop',
     sections: [
       {
         type: 'paragraph',
@@ -91,6 +93,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Writing Tips',
     gradient: 'from-brand-accent to-brand-accent-light',
     readTime: '4 min read',
+    coverImage: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?q=80&w=800&auto=format&fit=crop',
     sections: [
       {
         type: 'paragraph',
@@ -149,6 +152,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Publishing',
     gradient: 'from-brand-primary-light to-brand-accent',
     readTime: '5 min read',
+    coverImage: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?q=80&w=800&auto=format&fit=crop',
     sections: [
       {
         type: 'paragraph',
@@ -203,6 +207,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Author Stories',
     gradient: 'from-brand-accent to-brand-primary',
     readTime: '7 min read',
+    coverImage: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?q=80&w=800&auto=format&fit=crop',
     sections: [
       {
         type: 'paragraph',
@@ -249,6 +254,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Marketing',
     gradient: 'from-brand-primary to-brand-accent-light',
     readTime: '5 min read',
+    coverImage: 'https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?q=80&w=800&auto=format&fit=crop',
     sections: [
       {
         type: 'paragraph',
@@ -299,6 +305,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Writing Tips',
     gradient: 'from-brand-accent-light to-brand-primary-light',
     readTime: '5 min read',
+    coverImage: 'https://images.unsplash.com/photo-1474932430478-367dbb6832c1?q=80&w=800&auto=format&fit=crop',
     sections: [
       {
         type: 'paragraph',

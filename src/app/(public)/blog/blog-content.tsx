@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { BLOG_POSTS, BlogPost } from '@/constants/blog-data';
 
@@ -58,14 +59,18 @@ export function BlogContent() {
                 href={`/blog/${post.slug}`}
                 className="card overflow-hidden group h-full flex flex-col hover:shadow-lg transition-all duration-300 no-underline text-inherit hover:border-brand-accent border border-border"
               >
-                {/* Header Gradient */}
-                <div
-                  className={cn(
-                    'h-44 bg-gradient-to-br relative flex items-end p-5 shrink-0',
-                    post.gradient,
-                  )}
-                >
-                  <span className="badge bg-surface-card/90 text-text-primary backdrop-blur-sm text-caption">
+                {/* Cover Image Header */}
+                <div className="relative h-44 w-full overflow-hidden shrink-0">
+                  <Image
+                    src={post.coverImage}
+                    alt={post.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    priority={false}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <span className="absolute bottom-4 left-4 badge bg-surface-card/90 text-text-primary backdrop-blur-sm text-caption">
                     {post.category}
                   </span>
                 </div>

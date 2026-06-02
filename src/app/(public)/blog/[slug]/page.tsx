@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Calendar, Clock } from 'lucide-react';
 import { Navbar, Footer } from '@/components/layout';
 import { PageHeader } from '@/components/shared';
@@ -63,8 +64,16 @@ export default async function BlogPostPage({ params }: PageProps) {
             </div>
 
             {/* Main Header Banner */}
-            <div className={cn("rounded-2xl h-64 bg-gradient-to-br flex items-end p-8 md:p-12 mb-10 shadow-lg text-text-inverse", post.gradient)}>
-              <div>
+            <div className="relative rounded-2xl h-64 overflow-hidden flex items-end p-8 md:p-12 mb-10 shadow-lg text-text-inverse">
+              <Image
+                src={post.coverImage}
+                alt={post.title}
+                fill
+                priority
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20" />
+              <div className="relative z-10">
                 <span className="badge bg-surface-card/90 text-text-primary backdrop-blur-sm text-caption mb-4">
                   {post.category}
                 </span>
