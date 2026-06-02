@@ -342,23 +342,103 @@
 
   /* --- Card --- */
   .card {
-    background-color: var(--bl-surface-card);
+    position: relative;
+    background: 
+      radial-gradient(circle at top right, rgba(201, 168, 76, 0.06) 0%, transparent 60%),
+      radial-gradient(circle at bottom left, rgba(26, 60, 46, 0.04) 0%, transparent 70%),
+      linear-gradient(135deg, var(--bl-surface-card) 0%, rgba(249, 245, 239, 0.5) 100%);
     border: 1px solid var(--bl-border-muted);
-    border-radius: 0.75rem;
-    box-shadow: 0 2px 8px rgba(26, 60, 46, 0.06), 0 0 0 1px rgba(26, 60, 46, 0.03);
-    transition: box-shadow 250ms ease, transform 250ms ease;
+    border-radius: 0.5rem;
+    box-shadow: 
+      0 4px 20px -2px rgba(26, 60, 46, 0.04), 
+      0 2px 6px -1px rgba(26, 60, 46, 0.02),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, var(--bl-brand-accent) 50%, transparent 100%);
+    opacity: 0.6;
+    transition: opacity 300ms ease;
+    border-radius: 0.5rem 0.5rem 0 0;
   }
 
   .card:hover {
-    box-shadow: 0 12px 32px rgba(26, 60, 46, 0.12), 0 0 0 1px rgba(26, 60, 46, 0.05);
+    transform: translateY(-4px);
+    border-color: var(--bl-brand-accent-light);
+    box-shadow: 
+      0 20px 40px -8px rgba(26, 60, 46, 0.1), 
+      0 8px 16px -4px rgba(26, 60, 46, 0.04),
+      0 0 0 1px rgba(201, 168, 76, 0.25);
+  }
+
+  .card:hover::before {
+    opacity: 1;
   }
 
   /* --- Card with gold accent --- */
   .card-accent {
-    background-color: var(--bl-surface-card);
+    position: relative;
+    background: 
+      radial-gradient(circle at top right, rgba(201, 168, 76, 0.12) 0%, transparent 70%),
+      radial-gradient(circle at bottom left, rgba(26, 60, 46, 0.06) 0%, transparent 70%),
+      linear-gradient(135deg, var(--bl-surface-card) 0%, rgba(249, 245, 239, 0.6) 100%);
     border: 2px solid var(--bl-brand-accent);
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 14px rgba(201, 168, 76, 0.25);
+    border-radius: 0.5rem;
+    box-shadow: 
+      0 6px 20px rgba(201, 168, 76, 0.15),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+    transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-accent:hover {
+    transform: translateY(-4px);
+    border-color: var(--bl-brand-accent-hover);
+    box-shadow: 
+      0 24px 48px -8px rgba(201, 168, 76, 0.25),
+      0 0 0 1px rgba(201, 168, 76, 0.35);
+  }
+
+  /* --- Literary/Poetic Custom Card --- */
+  .card-literary {
+    position: relative;
+    background: 
+      radial-gradient(circle at top right, rgba(201, 168, 76, 0.1) 0%, transparent 60%),
+      radial-gradient(circle at bottom left, rgba(26, 60, 46, 0.05) 0%, transparent 60%),
+      linear-gradient(135deg, var(--bl-surface-card) 0%, rgba(201, 168, 76, 0.04) 50%, rgba(249, 245, 239, 0.6) 100%);
+    border: 1px solid var(--bl-border-accent);
+    border-radius: 0.5rem;
+    box-shadow: 
+      0 4px 24px rgba(201, 168, 76, 0.08), 
+      inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+    transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-literary::before {
+    content: "❝";
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-size: 3rem;
+    line-height: 1;
+    font-family: var(--font-display);
+    color: var(--bl-brand-accent);
+    opacity: 0.12;
+    pointer-events: none;
+  }
+
+  .card-literary:hover {
+    transform: translateY(-4px);
+    border-color: var(--bl-brand-accent-hover);
+    box-shadow: 
+      0 24px 48px -12px rgba(201, 168, 76, 0.18), 
+      0 8px 16px -4px rgba(201, 168, 76, 0.08);
   }
 
   /* --- Badge --- */
