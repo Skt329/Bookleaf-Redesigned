@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { AuthorSidebar } from './author-sidebar';
+import { SessionGuard } from '@/components/auth/session-guard';
 
 import type { Metadata } from 'next';
 
@@ -39,6 +40,7 @@ export default async function AuthorLayout({
 
   return (
     <div className="flex min-h-screen bg-surface-background">
+      <SessionGuard loginUrl="/login" />
       <AuthorSidebar user={user} />
       <div className="flex flex-1 flex-col lg:ml-0">
         {/* Spacer for mobile top bar */}

@@ -31,6 +31,12 @@ export default function ChallengeSignupPage() {
       return 'Please enter a valid email address.';
     if (password.length < 8)
       return 'Password must be at least 8 characters.';
+    if (!/[A-Z]/.test(password))
+      return 'Password must contain at least one uppercase letter.';
+    if (!/[0-9]/.test(password))
+      return 'Password must contain at least one number.';
+    if (!/[^A-Za-z0-9]/.test(password))
+      return 'Password must contain at least one special character.';
     if (password !== confirmPassword) return 'Passwords do not match.';
     return null;
   }
@@ -170,6 +176,9 @@ export default function ChallengeSignupPage() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Min. 8 characters"
             />
+            <p className="mt-1.5 text-[11px] text-text-muted">
+              Must be at least 8 characters, with 1 uppercase letter, 1 number, and 1 special character.
+            </p>
           </div>
 
           {/* Confirm Password */}

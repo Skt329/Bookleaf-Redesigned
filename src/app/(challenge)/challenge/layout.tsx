@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { ChallengeSidebar } from './challenge-sidebar';
+import { SessionGuard } from '@/components/auth/session-guard';
 
 import type { Metadata } from 'next';
 
@@ -51,6 +52,7 @@ export default async function ChallengeLayout({
 
   return (
     <div className="flex min-h-screen bg-surface-background">
+      <SessionGuard loginUrl="/challenge/login" />
       <ChallengeSidebar user={user} />
       <div className="flex flex-1 flex-col lg:ml-0">
         {/* Spacer for mobile top bar */}

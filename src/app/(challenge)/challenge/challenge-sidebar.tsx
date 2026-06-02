@@ -44,7 +44,7 @@ export function ChallengeSidebar({ user }: ChallengeSidebarProps) {
 
   const handleLogout = async () => {
     const { signOut } = await import('next-auth/react');
-    signOut({ callbackUrl: '/challenge/login' });
+    await signOut({ callbackUrl: '/challenge/login', redirect: true });
   };
 
   const sidebarContent = (

@@ -25,6 +25,15 @@ export default auth((req) => {
   const role = session?.user?.role as UserRole | undefined;
   const pathname = nextUrl.pathname;
 
+  // Helper to create a response with cache control headers
+  const nextWithCacheControl = () => {
+    const res = NextResponse.next();
+    res.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.headers.set('Pragma', 'no-cache');
+    res.headers.set('Expires', '0');
+    return res;
+  };
+
   // ── Challenge auth pages: redirect logged-in users ──
   if (
     pathname === '/challenge/login' ||
@@ -55,7 +64,8 @@ export default auth((req) => {
     pathname.startsWith('/challenge/dashboard') ||
     pathname.startsWith('/challenge/poems') ||
     pathname.startsWith('/challenge/progress') ||
-    pathname.startsWith('/challenge/payment')
+    pathname.startsWith('/challenge/payment') ||
+    pathname.startsWith('/challenge/book')
   ) {
     if (!isLoggedIn) {
       return NextResponse.redirect(new URL('/challenge/login', nextUrl));
@@ -64,7 +74,22 @@ export default auth((req) => {
       return NextResponse.redirect(new URL('/admin/dashboard', nextUrl));
     }
     // Allow CHALLENGER and AUTHOR
-    return NextResponse.next();
+    return nextWithCacheControl();
+  }
+
+  // General fallback check for any other /challenge/* routes (excluding login/signup)
+  if (
+    pathname.startsWith('/challenge') &&
+    pathname !== '/challenge/login' &&
+    pathname !== '/challenge/signup'
+  ) {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL('/challenge/login', nextUrl));
+    }
+    if (role === 'ADMIN') {
+      return NextResponse.redirect(new URL('/admin/dashboard', nextUrl));
+    }
+    return nextWithCacheControl();
   }
 
   // ── Protected: /author/* → must be AUTHOR (ADMIN → redirect to admin panel) ──
@@ -78,7 +103,7 @@ export default auth((req) => {
     if (role !== 'AUTHOR') {
       return NextResponse.redirect(new URL('/', nextUrl));
     }
-    return NextResponse.next();
+    return nextWithCacheControl();
   }
 
   // ── Protected: /admin/* → must be ADMIN ──
@@ -89,7 +114,7 @@ export default auth((req) => {
     if (role !== 'ADMIN') {
       return NextResponse.redirect(new URL('/', nextUrl));
     }
-    return NextResponse.next();
+    return nextWithCacheControl();
   }
 
   return NextResponse.next();

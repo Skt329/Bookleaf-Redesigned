@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { AdminSidebar } from './admin-sidebar';
+import { SessionGuard } from '@/components/auth/session-guard';
 
 export default async function AdminLayout({
   children,
@@ -19,6 +20,7 @@ export default async function AdminLayout({
 
   return (
     <div className="min-h-screen bg-surface-background">
+      <SessionGuard loginUrl="/login" />
       <AdminSidebar
         user={{ name: session.user.name, email: session.user.email }}
         unreadNotifications={unreadNotifications}

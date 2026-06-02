@@ -2,7 +2,11 @@ import type { NextAuthConfig } from 'next-auth';
 
 export const authConfig = {
   providers: [], // Configured dynamically in auth.ts
-  session: { strategy: 'jwt' },
+  session: { 
+    strategy: 'jwt',
+    maxAge: 7 * 24 * 60 * 60,      // 7 days
+    updateAge: 24 * 60 * 60,        // Rotate token every 24 hours
+  },
   pages: {
     signIn: '/login',
   },

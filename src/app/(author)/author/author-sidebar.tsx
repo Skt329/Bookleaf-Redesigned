@@ -49,7 +49,7 @@ export function AuthorSidebar({ user }: AuthorSidebarProps) {
 
   const handleLogout = async () => {
     const { signOut } = await import('next-auth/react');
-    signOut({ callbackUrl: '/login' });
+    await signOut({ callbackUrl: '/login', redirect: true });
   };
 
   const sidebarContent = (

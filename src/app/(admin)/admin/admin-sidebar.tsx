@@ -115,7 +115,7 @@ export function AdminSidebar({ user, unreadNotifications = 0 }: AdminSidebarProp
           </div>
         </div>
         <button
-          onClick={() => signOut({ callbackUrl: '/login' })}
+          onClick={() => signOut({ callbackUrl: '/login', redirect: true })}
           className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-body-sm text-text-secondary hover:bg-status-danger/10 hover:text-status-danger transition-colors font-body"
         >
           <LogOut className="size-4" />
